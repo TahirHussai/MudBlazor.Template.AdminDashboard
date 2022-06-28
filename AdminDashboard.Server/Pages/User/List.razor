@@ -1,4 +1,5 @@
 ﻿@page "/user/List"
+@attribute [Authorize(Policy = "AdminPolicy")]
 @*@using AdminDashboard.Server.Models
 @using AdminDashboard.Server.Repository.Interface
 @inject MudBlazor.ISnackbar snackBar

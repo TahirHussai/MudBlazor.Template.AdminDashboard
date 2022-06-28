@@ -1,4 +1,4 @@
-using AdminDashboard.Server.Data;
+using Blazored.LocalStorage;
 using AdminDashboard.Server.Repository.Implementation;
 using AdminDashboard.Server.Repository.Interface;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +15,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdminDashboard.Server.Providers;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AdminDashboard.Server
 {
@@ -35,16 +38,15 @@ namespace AdminDashboard.Server
             services.AddServerSideBlazor();
             services.AddMudServices();
             services.AddHttpClient();
-
-            services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(
-                   Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
-               .AddEntityFrameworkStores<ApplicationDbContext>();
-
+            services.AddBlazoredLocalStorage();
+            services.AddScoped<ApiAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(p =>
+                p.GetRequiredService<ApiAuthenticationStateProvider>());
+            services.AddScoped<JwtSecurityTokenHandler>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IFileUpload, FileUpload>();
             services.AddMemoryCache();
+            
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminPolicy", policy =>

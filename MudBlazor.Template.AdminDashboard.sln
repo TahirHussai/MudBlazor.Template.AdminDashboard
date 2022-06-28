@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminDashboard.Server", "Ad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminDashboard.Wasm", "AdminDashboard.Wasm\AdminDashboard.Wasm.csproj", "{DD96D407-7F9F-4868-BBDC-9D3DE9DA97CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminDashboard.Api", "AdminDashboard.Api\AdminDashboard.Api.csproj", "{C3329B08-FFBC-454A-A8BF-FD29211E7B50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminDashboard.Api", "AdminDashboard.Api\AdminDashboard.Api.csproj", "{C3329B08-FFBC-454A-A8BF-FD29211E7B50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

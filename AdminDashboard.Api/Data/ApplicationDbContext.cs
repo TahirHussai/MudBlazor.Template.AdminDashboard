@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AdminDashboard.API.Data
+namespace AdminDashboard.APi.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApiUser>
     {
         //public virtual DbSet<UserProfile> userProfiles { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

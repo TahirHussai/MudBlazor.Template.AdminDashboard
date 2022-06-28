@@ -1,7 +1,13 @@
-﻿using AdminDashboard.Api.Models;
+﻿using AdminDashboard.Api.Data;
+using AdminDashboard.Api.Models;
+using AdminDashboard.Api.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,18 +17,15 @@ namespace AdminDashboard.Api.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IConfiguration _config;
-        private readonly ILogger<AccountController> _logger;
-        public AccountController(ILogger<AccountController> logger, IConfiguration configuration, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        private readonly UserManager<ApiUser> userManager;
+        private readonly IConfiguration configuration;
+        private readonly ILogger<AccountController> logger;
+        public AccountController(ILogger<AccountController> logger, UserManager<ApiUser> userManager, IConfiguration configuration)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _config = configuration;
-            _logger = logger;
+            this.logger = logger;
 
-
+            this.userManager = userManager;
+            this.configuration = configuration;
         }
 
         [Route("register")]
@@ -30,59 +33,108 @@ namespace AdminDashboard.Api.Controllers
 
         public async Task<IActionResult> Register([FromBody] RegistrationModel userDTO)
         {
-            var location = GetControllerActionName();
+            logger.LogInformation($"Registration Attempt for {userDTO.EmailAddress} ");
             try
             {
-                var username = userDTO.EmailAddress;
-                var password = userDTO.Password;
-                _logger.LogInformation($"Registration Attempt for {username} ");
-                var user = new IdentityUser { Email = username, UserName = username };
-                var result = await _userManager.CreateAsync(user, password);
+                ApiUser user = new ApiUser();
+                user.Email = userDTO.EmailAddress;
+                user.PasswordHash = userDTO.Password;
+                user.FirstName = userDTO.FirstName==null?" ": userDTO.FirstName;
+                user.LastName = userDTO.LastName==null?" ": userDTO.LastName;
+                user.ProfilePicture = userDTO.ProfilePicture;
+                user.UserName= userDTO.EmailAddress;
 
-                if (!result.Succeeded)
+                var result = await userManager.CreateAsync(user, userDTO.Password);
+
+                if (result.Succeeded == false)
                 {
                     foreach (var error in result.Errors)
                     {
-                        _logger.LogError($"{error.Code} {error.Description}");
+                        ModelState.AddModelError(error.Code, error.Description);
                     }
-                    return InternalError($"{location}:{username} User Registration Attempt Failed");
+                    return BadRequest(ModelState);
                 }
-                await _userManager.AddToRoleAsync(user, userDTO.UserRole);
-                return Created("login", new { result.Succeeded });
+                await userManager.AddToRoleAsync(user, userDTO.UserRole);
+                return Accepted();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-                return StatusCode(500, "Some thing went wrong please contact to administrator");
+                logger.LogError(ex, $"Something Went Wrong in the {nameof(Register)}");
+                return Problem($"Something Went Wrong in the {nameof(Register)}", statusCode: 500);
             }
         }
 
-        [Route("login")]
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(LoginModel dto)
+        [Route("login")]
+        public async Task<ActionResult<ResponseModel>> Login(LoginModel dto)
         {
             var location = GetControllerActionName();
             try
             {
+                var response = new ResponseModel();
                 var username = dto.EmailAddress;
                 var password = dto.Password;
-                _logger.LogInformation($"{location}: Login Attempt from user {username} ");
-                var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
+                logger.LogInformation($"{location}: Login Attempt from user {username} ");
+                var user = await userManager.FindByEmailAsync(username);
+                var passwordValid = await userManager.CheckPasswordAsync(user, dto.Password);
 
-                if (result.Succeeded)
+                if (user == null || passwordValid == false)
                 {
-                    _logger.LogInformation($"{location}: {username} Successfully Authenticated");
-                    var user = await _userManager.FindByEmailAsync(username);
-                    return Ok();
+                     response = new ResponseModel
+                    {
+                        Email = dto.EmailAddress,
+                        Token = "",
+                        IsSuccess = false,
+                        ResponseMessage = "Ivalid!"
+                    };
+                    return response;
                 }
-                _logger.LogInformation($"{location}: {username} Not Authenticated");
-                return Unauthorized(dto);
+                string tokenString = await GenerateToken(user);
+
+                 response = new ResponseModel
+                {
+                    Email = dto.EmailAddress,
+                    Token = tokenString,
+                    UserId = user.Id,
+                    IsSuccess=true,
+                    ResponseMessage="Success"
+                };
+                return response;
             }
             catch (Exception e)
             {
                 return InternalError($"{location}: {e.Message} - {e.InnerException}");
             }
+        }
+        private async Task<string> GenerateToken(ApiUser user)
+        {
+            var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]));
+            var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
+
+            var roles = await userManager.GetRolesAsync(user);
+            var roleClaims = roles.Select(q => new Claim(ClaimTypes.Role, q)).ToList();
+
+            var userClaims = await userManager.GetClaimsAsync(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(CustomClaimTypes.Uid, user.Id)
+            }
+            .Union(userClaims)
+            .Union(roleClaims);
+
+            var token = new JwtSecurityToken(
+                issuer: configuration["JwtSettings:Issuer"],
+                audience: configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(Convert.ToInt32(configuration["JwtSettings:Duration"])),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
         private string GetControllerActionName()
         {
@@ -94,7 +146,7 @@ namespace AdminDashboard.Api.Controllers
 
         private ObjectResult InternalError(string message)
         {
-            _logger.LogError(message);
+            logger.LogError(message);
 
             return StatusCode(500, "Some thing went wrong please contact to administrator");
         }

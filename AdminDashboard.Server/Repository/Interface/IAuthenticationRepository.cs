@@ -10,5 +10,6 @@ namespace AdminDashboard.Server.Repository.Interface
     {
         public Task<bool> Register(RegistrationModel user);
         public Task<bool> Login(LoginModel user);
+        public Task Logout();
     }
 }

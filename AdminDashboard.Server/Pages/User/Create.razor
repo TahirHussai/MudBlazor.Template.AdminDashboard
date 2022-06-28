@@ -1,5 +1,5 @@
 ﻿@page "/user/create"
-
+@attribute [Authorize(Policy = "AdminPolicy")]
 @using AdminDashboard.Server.Models
 @using System.IO
 @using System.Text.RegularExpressions
@@ -36,8 +36,11 @@
                                                   Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
                                                   RequiredError="Password is required!" />
                                 </MudItem>
-                                <MudItem xs="12" md="6">
-                                    <MudTextField @bind-Value="model.UserName" Label="User Name" Variant="Variant.Outlined" />
+                                <MudItem xs="6" md="6">
+                                    <MudTextField @bind-Value="model.FirstName" Label="User Name" Variant="Variant.Outlined" />
+                                </MudItem>
+                                 <MudItem xs="6" md="6">
+                                    <MudTextField @bind-Value="model.LastName" Label="User Name" Variant="Variant.Outlined" />
                                 </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudSelect @bind-Value="model.UserRole" Variant="Variant.Outlined" Label="Select User Role" Required="true">

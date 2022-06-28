@@ -12,7 +12,7 @@ namespace AdminDashboard.Api.Models
         [EmailAddress]
         [Display(Name = "Email Address")]
         public string EmailAddress { get; set; }
-        public string? FirtName { get; set; }
+        public string? FirstName { get; set; }
         public string? LastName { get; set; }
         [Required]
         [DataType(DataType.Password)]

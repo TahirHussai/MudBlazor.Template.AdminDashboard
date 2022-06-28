@@ -24,6 +24,10 @@ namespace AdminDashboard.Server.Models
         //public string ConfirmPassword { get; set; }
         [Required]
         public string UserRole { get; set; }
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
         public string? ProfilePicture { get; set; }
     }
     public class LoginModel
