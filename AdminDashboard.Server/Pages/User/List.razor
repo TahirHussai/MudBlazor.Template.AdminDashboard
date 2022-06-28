@@ -1,0 +1,74 @@
+﻿@page "/user/List"
+@*@using AdminDashboard.Server.Models
+@using AdminDashboard.Server.Repository.Interface
+@inject MudBlazor.ISnackbar snackBar
+@inject NavigationManager _navManager
+
+<h4>User  List</h4>
+<br />
+<MudContainer Class="d-flex justify-Left mb-2">
+    <MudFab Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Large" IconSize="Size.Large" Label="Add New User" Class="ma-2" @onclick="(e => CreateNewUser())" />
+</MudContainer>
+@if (toDoList != null && toDoList.Count() > 0)
+{
+
+    <MudTable Items="@toDoList" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+        <HeaderContent>
+            <MudTh>Profile Image</MudTh>
+            <MudTh>UserName</MudTh>
+            <MudTh>Email</MudTh>
+
+        </HeaderContent>
+
+        <RowTemplate>
+          
+        <MudTd DataLabel="UserName">   <img src="images/@context.ProfilePicture" style="height:90px;width:90px" Alt="Mony the dog" Elevation="25" Class="rounded-lg" /> </MudTd>
+        <MudTd DataLabel="UserName">@context.UserName</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+    <MudTd DataLabel="Action">
+            <MudFab @onclick="@(()=>Edit(@context.ID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.ID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+}
+else
+{
+    <MudAlert Severity="MudBlazor.Severity.Warning">No Record Found!</MudAlert>
+}
+
+
+@code {
+    IEnumerable<UserProfile> toDoList;
+
+    [Inject]
+    public IUserProfileRepository _Repo { get; set; }
+    private bool _loading;
+    protected async override Task OnInitializedAsync()
+    {
+        await GetData();
+    }
+    private async Task GetData()
+    {
+        toDoList = _Repo.GetUserProfile();
+    }
+    private void CreateNewUser()
+    {
+        _navManager.NavigateTo("/User/Create");
+    }
+    private void Edit(int Id)
+    {
+        _navManager.NavigateTo("/User/Edit/" + Id);
+    }
+    private void Delete(int Id)
+    {
+        _Repo.DeleteUserProfile(Id);
+        BackToList();
+    }
+    private void BackToList()
+    {
+        _navManager.NavigateTo("/", true);
+        snackBar.Add("User Deleted.", MudBlazor.Severity.Success);
+    }
+
+}*@

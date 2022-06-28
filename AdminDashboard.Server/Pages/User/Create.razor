@@ -1,0 +1,232 @@
+﻿@page "/user/create"
+
+@using AdminDashboard.Server.Models
+@using System.IO
+@using System.Text.RegularExpressions
+@using AdminDashboard.Server.Repository.Interface
+@using System.ComponentModel.DataAnnotations
+
+@inject IAuthenticationRepository _authRepo
+@inject IFileUpload _fileUpload
+@inject NavigationManager _navManager
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4">Account</MudText>
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="General">
+        <MudGrid>
+
+            <MudItem xs="12" sm="12" md="12">
+                <MudForm Model="@model" @ref="@form" ValidationDelay="0">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText>Profile Details</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string" Label="Email" Required="true" @bind-Value="model.EmailAddress" RequiredError="Email is required!"
+                                                  Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @bind-Value="model.Password" @ref="pwField1"
+                                                  InputType="InputType.Password"
+                                                  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                                                  RequiredError="Password is required!" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField @bind-Value="model.UserName" Label="User Name" Variant="Variant.Outlined" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudSelect @bind-Value="model.UserRole" Variant="Variant.Outlined" Label="Select User Role" Required="true">
+
+                                        @if (Rolelist != null)
+                                        {
+                                            foreach (var roles in Rolelist)
+                                            {
+                                                <MudSelectItem Value="@(roles.RoleName)">@roles.RoleName</MudSelectItem>
+                                            }
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+
+
+                                <MudItem xs="12" md="6">
+                                    <label for="bookcover">Upload Photo</label>
+                                    <BlazorInputFile.InputFile OnChange="HandleFileSelection" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    @if (!string.IsNullOrWhiteSpace(imageDataURL))
+                                    {
+                                        <img src="@imageDataURL" style="height:100px;width:100px" />
+                                    }
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                        <MudCardActions Class="pb-4 pl-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  HandleRegistration())">Register</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
+                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> BackToList())">Cancel</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudForm>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+</MudTabs>
+
+@code {
+    MudForm form;
+    MudTextField<string> pwField1;
+    private IFileListEntry file;
+    private MemoryStream msFile;
+    private bool isSuccess = true;
+    private bool isInvalidFileType = false;
+    private string imageDataURL;
+
+    RegistrationModel model = new RegistrationModel();
+    List<RoleModel> Rolelist = new List<RoleModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Rolelist = new List<RoleModel>()
+        {
+            new RoleModel(){RoleName="Admin",Id="1"},
+            new RoleModel(){RoleName="Manager",Id="2"},
+            new RoleModel(){RoleName="User",Id="3"}
+        };
+    }
+    private async Task HandleFileSelection(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add($"Files with {files.FirstOrDefault().Size} bytes size", Severity.Warning);
+        Snackbar.Add($"This file has the extension {files.FirstOrDefault().Name.Split(".").Last()}", Severity.Info);
+        if (file != null)
+        {
+            var name = file.Name;
+            if (name.Contains("jpg") || name.Contains("png") || name.Contains("jpeg"))
+            {
+                msFile = new MemoryStream();
+                await file.Data.CopyToAsync(msFile);
+
+                var reader = new StreamReader(file.Data);
+                var imageBase64Data = Convert.ToBase64String(msFile.ToArray());
+                imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
+                isInvalidFileType = false;
+            }
+            else
+            {
+                isInvalidFileType = true;
+                imageDataURL = string.Empty;
+                Snackbar.Add("Please remove the invalid file type and select as new image, or leave this field blank ", Severity.Warning);
+
+            }
+        }
+        else
+        {
+            isInvalidFileType = false;
+        }
+    }
+    private RegistrationModel Model = new RegistrationModel();
+
+    bool isField = false;
+    private async Task HandleRegistration()
+    {
+         if (file != null)
+        {
+            var ext = Path.GetExtension(file.Name);
+            var picId = Guid.NewGuid().ToString().Replace("-", "");
+            var picName = $"{picId}{ext}";
+
+            _fileUpload.UploadFile(file, msFile, picName);
+
+            model.ProfilePicture = picName;
+        }
+        var response = await _authRepo.Register(model);
+        
+        if (response)
+        {
+             Snackbar.Add("User Registered Successfully!.", MudBlazor.Severity.Success);
+            BackToList();
+        }
+        else
+        {
+            BackToList();
+            isField = true;
+             Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
+
+
+        }
+    }
+    //private async Task Submit()
+    //{
+    //    var username = model.EmailAddress;
+    //    var password = model.Password;
+
+    //    if (file != null)
+    //    {
+    //        var ext = Path.GetExtension(file.Name);
+    //        var picId = Guid.NewGuid().ToString().Replace("-", "");
+    //        var picName = $"{picId}{ext}";
+
+    //        _fileUpload.UploadFile(file, msFile, picName);
+
+    //        model.ProfilePicture = picName;
+    //    }
+    //    var user = new IdentityUser { Email = username, UserName = username,EmailConfirmed=true};
+    //    var result = await _userManager.CreateAsync(user, password);
+    //    if (result.Succeeded)
+    //    {
+    //        await _userManager.AddToRoleAsync(user,model.UserRole);
+
+    //         userProfile.ProfilePicture= model.ProfilePicture;
+    //         userProfile.Email=model.EmailAddress;
+    //         userProfile.Password=model.Password;
+    //        userProfile.ForeignKeyId = user.Id;
+    //        userProfile.UserName = model.UserName;
+
+    //        _Repo.InsertUserProfile(userProfile);
+
+    //         Snackbar.Add("User Created.", MudBlazor.Severity.Success);
+
+    //          BackToList();
+    //    }
+    //    else
+    //    {
+    //      Snackbar.Add(result.ToString(), MudBlazor.Severity.Warning);
+    //    }
+    //}
+    private void BackToList()
+    {
+        _navManager.NavigateTo("/user/List");
+    }
+
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "Password is required!";
+            yield break;
+        }
+        if (pw.Length < 8)
+            yield return "Password must be at least of length 8";
+        if (!Regex.IsMatch(pw, @"[A-Z]"))
+            yield return "Password must contain at least one capital letter";
+        if (!Regex.IsMatch(pw, @"[a-z]"))
+            yield return "Password must contain at least one lowercase letter";
+        if (!Regex.IsMatch(pw, @"[0-9]"))
+            yield return "Password must contain at least one digit";
+    }
+
+    private string PasswordMatch(string arg)
+    {
+        if (pwField1.Value != arg)
+            return "Passwords don't match";
+        return null;
+    }
+} 

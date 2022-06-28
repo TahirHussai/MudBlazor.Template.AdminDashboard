@@ -1,0 +1,79 @@
+﻿@page "/"
+@page "/pages/authentication/login"
+@layout LoginLayout
+@using AdminDashboard.Server.Models
+@using AdminDashboard.Server.Repository.Interface
+@inject IAuthenticationRepository _authRepo
+@inject NavigationManager _navMan
+
+@inject ISnackbar Snackbar
+@inject NavigationManager _navManager
+<MudForm Model="@model" @ref="@form" ValidationDelay="0">
+
+    <MudText Typo="Typo.h4" GutterBottom="true">Sign In</MudText>
+
+    <MudText>Don't have an account? <MudLink Href="/pages/authentication/register">Sign Up</MudLink></MudText>
+
+    <MudTextField T="string" @bind-Value="@model.EmailAddress" Label="E-mail" Variant="Variant.Outlined" Class="my-6"></MudTextField>
+
+    <MudTextField @bind-Value="@model.Password" Label="Password" Variant="Variant.Outlined" Adornment="Adornment.End" />
+
+    <div Class="d-flex justify-space-between align-center">
+        <MudCheckBox T="bool" Label="Remember me?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+        <MudLink Href="/pages/authentication/forgot-password">Forgot pwd?</MudLink>
+    </div>
+
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@( () =>  HandleLogin())" Size="Size.Large" FullWidth="true">Sign In</MudButton>
+</MudForm>
+@code {
+    MudForm form;
+    LoginModel model = new LoginModel();
+
+    bool response = true;
+    private async Task HandleLogin()
+    {
+        response = await _authRepo.Login(model);
+
+        if (response)
+        {
+            Snackbar.Add("Login successfully!.", MudBlazor.Severity.Success);
+            _navManager.NavigateTo("/personal/dashboard");
+        }
+        else
+        {
+            Snackbar.Add("Please Provide Valid  Email and Password!.", MudBlazor.Severity.Warning);
+        }
+    }
+    //private async Task Submit()
+    //{
+    //    var username = model.EmailAddress;
+    //    var password = model.Password;
+
+    //    var user = await _userManager.FindByEmailAsync(username);
+    //    if(user==null)
+    //    {
+    //        Snackbar.Add("Invalid Email!.", MudBlazor.Severity.Warning);
+    //    }
+    //    var result = _signInManager.SignInAsync(user, true);
+    //    var identityUser = await _userManager.FindByEmailAsync(username) ??
+    //    await _userManager.FindByNameAsync(username);
+
+    //    var validatePassword = await _userManager.CheckPasswordAsync(identityUser, password);
+    //    if (validatePassword)
+    //    {
+    //        if (await _userManager.CheckPasswordAsync(identityUser, password) == true)
+    //        {
+    //            Snackbar.Add("Login successfully!.", MudBlazor.Severity.Success);
+    //            _navManager.NavigateTo("/personal/dashboard");
+    //        }
+    //        else{
+    //            Snackbar.Add("Invalid Password!.", MudBlazor.Severity.Warning);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        Snackbar.Add("Invalid Password.", MudBlazor.Severity.Warning);
+    //    }
+    //}
+}
