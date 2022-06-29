@@ -1,6 +1,7 @@
 ﻿@page "/user/List"
-@attribute [Authorize(Policy = "AdminPolicy")]
-@*@using AdminDashboard.Server.Models
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@using AdminDashboard.Server.Models
 @using AdminDashboard.Server.Repository.Interface
 @inject MudBlazor.ISnackbar snackBar
 @inject NavigationManager _navManager
@@ -18,18 +19,19 @@
             <MudTh>Profile Image</MudTh>
             <MudTh>UserName</MudTh>
             <MudTh>Email</MudTh>
-
+            <MudTh>Role</MudTh>
         </HeaderContent>
 
         <RowTemplate>
           
-        <MudTd DataLabel="UserName">   <img src="images/@context.ProfilePicture" style="height:90px;width:90px" Alt="Mony the dog" Elevation="25" Class="rounded-lg" /> </MudTd>
-        <MudTd DataLabel="UserName">@context.UserName</MudTd>
-        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="UserName">   <img src="images/@context.ProfilePicture" style="height:55px;width:90px" Alt="Mony the dog" Elevation="25" Class="rounded-lg" /> </MudTd>
+        <MudTd DataLabel="UserName">@context.FirstName  @context.LastName</MudTd>
+        <MudTd DataLabel="Email">@context.EmailAddress</MudTd>
+        <MudTd DataLabel="Role">@context.UserRole</MudTd>
     <MudTd DataLabel="Action">
-            <MudFab @onclick="@(()=>Edit(@context.ID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
-            <MudFab @onclick="@(()=>Delete(@context.ID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
-        </MudTd>
+            @*<MudFab @onclick="@(()=>Edit(@context.UserId))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.UserId))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+     *@   </MudTd>
     </RowTemplate>
 </MudTable>
 }
@@ -40,10 +42,10 @@ else
 
 
 @code {
-    IEnumerable<UserProfile> toDoList;
+    IEnumerable<UserModel> toDoList;
 
     [Inject]
-    public IUserProfileRepository _Repo { get; set; }
+    public IAuthenticationRepository  _Repo { get; set; }
     private bool _loading;
     protected async override Task OnInitializedAsync()
     {
@@ -51,7 +53,7 @@ else
     }
     private async Task GetData()
     {
-        toDoList = _Repo.GetUserProfile();
+        toDoList = await _Repo.Get();
     }
     private void CreateNewUser()
     {
@@ -61,15 +63,15 @@ else
     {
         _navManager.NavigateTo("/User/Edit/" + Id);
     }
-    private void Delete(int Id)
-    {
-        _Repo.DeleteUserProfile(Id);
-        BackToList();
-    }
+    //private void Delete(int Id)
+    //{
+    //    _Repo.DeleteUserProfile(Id);
+    //    BackToList();
+    //}
     private void BackToList()
     {
         _navManager.NavigateTo("/", true);
         snackBar.Add("User Deleted.", MudBlazor.Severity.Success);
     }
 
-}*@
+}

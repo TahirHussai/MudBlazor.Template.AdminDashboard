@@ -45,17 +45,17 @@ namespace AdminDashboard.Server
             services.AddScoped<JwtSecurityTokenHandler>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IFileUpload, FileUpload>();
+            services.AddSingleton(_ => Configuration);
             services.AddMemoryCache();
             
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminPolicy", policy =>
-                    policy.RequireClaim("Admin"));
-
-                options.AddPolicy("UserPolicy", policy =>
-                    policy.RequireClaim("User"));
-                options.AddPolicy("ManagerPolicy", policy =>
-                  policy.RequireClaim("Manager"));
+                options.AddPolicy("Admin", policy =>
+                    policy.RequireClaim("Admin", "true"));
+                options.AddPolicy("User", policy =>
+                    policy.RequireClaim("User", "true"));
+                options.AddPolicy("Manager", policy =>
+                  policy.RequireClaim("Manager", "true"));
             });
         }
 

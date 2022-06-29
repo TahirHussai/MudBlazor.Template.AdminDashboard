@@ -27,7 +27,31 @@ namespace AdminDashboard.Api.Controllers
             this.userManager = userManager;
             this.configuration = configuration;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetUserList()
+        {
+            try
+            {
+                logger.LogInformation("Attempted Get All Users");
+                var users = userManager.Users.Select(c => new UserModel()
+            {
+                FirstName = c.FirstName,
+                EmailAddress = c.Email,
+                ProfilePicture = c.ProfilePicture,
+                LastName = c.LastName,
+                UserId = c.Id,
+                UserRole = string.Join(",", userManager.GetRolesAsync(c).Result.ToArray())
+            }).ToList();
 
+                logger.LogInformation("Successfully got All users");
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return InternalError($"{ ex.Message}-{ex.InnerException}");
+            }
+        }
         [Route("register")]
         [HttpPost]
 
@@ -39,10 +63,10 @@ namespace AdminDashboard.Api.Controllers
                 ApiUser user = new ApiUser();
                 user.Email = userDTO.EmailAddress;
                 user.PasswordHash = userDTO.Password;
-                user.FirstName = userDTO.FirstName==null?" ": userDTO.FirstName;
-                user.LastName = userDTO.LastName==null?" ": userDTO.LastName;
+                user.FirstName = userDTO.FirstName == null ? " " : userDTO.FirstName;
+                user.LastName = userDTO.LastName == null ? " " : userDTO.LastName;
                 user.ProfilePicture = userDTO.ProfilePicture;
-                user.UserName= userDTO.EmailAddress;
+                user.UserName = userDTO.EmailAddress;
 
                 var result = await userManager.CreateAsync(user, userDTO.Password);
 
@@ -80,24 +104,28 @@ namespace AdminDashboard.Api.Controllers
 
                 if (user == null || passwordValid == false)
                 {
-                     response = new ResponseModel
+                    response = new ResponseModel
                     {
                         Email = dto.EmailAddress,
                         Token = "",
                         IsSuccess = false,
-                        ResponseMessage = "Ivalid!"
+                        ResponseMessage = "Ivalid!",
+                        ProfilePicture = "",
+                        UserName = ""
                     };
                     return response;
                 }
                 string tokenString = await GenerateToken(user);
 
-                 response = new ResponseModel
+                response = new ResponseModel
                 {
                     Email = dto.EmailAddress,
                     Token = tokenString,
                     UserId = user.Id,
-                    IsSuccess=true,
-                    ResponseMessage="Success"
+                    IsSuccess = true,
+                    ProfilePicture= user.ProfilePicture,
+                    ResponseMessage = "Success",
+                    UserName= user.FirstName+" "+user.LastName
                 };
                 return response;
             }

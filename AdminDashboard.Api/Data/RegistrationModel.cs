@@ -49,4 +49,17 @@ namespace AdminDashboard.Api.Models
 
         public string Id { get; set; } = string.Empty;
     }
+    public class UserModel
+    {
+        
+        public string EmailAddress { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        
+        public string Password { get; set; }
+        [Required]
+        public string? UserRole { get; set; }
+        public string? ProfilePicture { get; set; }
+        public string UserId { get; set; }
+    }
 }

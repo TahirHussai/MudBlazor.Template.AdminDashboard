@@ -1,5 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
+ @using Blazored.LocalStorage
+@inject  ILocalStorageService localStorage
+
+@{
+     var userImage =  localStorage.GetItemAsync<string>("LoginUserImage");
+}
+    
+  
 
 <MudThemeProvider Theme="_themeManager.Theme" />
 <MudDialogProvider />
@@ -20,24 +28,24 @@
             <MudText Typo="Typo.subtitle2">Admin Dashboard</MudText>
         </MudHidden>
         <MudSpacer />
-        <MudMenu Icon="@Icons.Material.Outlined.Translate" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
+        @*<MudMenu Icon="@Icons.Material.Outlined.Translate" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
             <MudMenuItem>English</MudMenuItem>
             <MudMenuItem>Swedish</MudMenuItem>
             <MudMenuItem>Old Norse</MudMenuItem>
-        </MudMenu>
+        </MudMenu>*@
         <MudMenu Icon="@Icons.Material.Outlined.Widgets" Color="Color.Inherit" Direction="Direction.Bottom" OffsetY="true" Dense="true">
-            <MudMenuItem Link="https://mudblazor.com/">MudBlazor</MudMenuItem>
-            <MudMenuItem Link="https://github.com/Garderoben/MudBlazor.Templates">Source Code</MudMenuItem>
+            @* <MudMenuItem Link="https://mudblazor.com/">MudBlazor</MudMenuItem>
+                <MudMenuItem Link="https://github.com/Garderoben/MudBlazor.Templates">Source Code</MudMenuItem>*@
         </MudMenu>
         <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
             <ActivatorContent>
-                <MudAvatar Image="images/avatar_jonny.jpg" />
+               <MudAvatar Image=@($"/images/{userImage}") />
             </ActivatorContent>
             <ChildContent>
                 <PersonCard Class="mt-n2" />
                 <MudDivider Class="mb-2" />
                 <MudListItem Text="Account" Icon="@Icons.Material.Outlined.Person" Href="/personal/account" />
-                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="/pages/authentication/login" />
+                <MudListItem Text="Logout" Icon="@Icons.Material.Outlined.Login" Href="/" />
             </ChildContent>
         </MudMenu>
     </MudAppBar>
@@ -50,9 +58,9 @@
                 <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
                 <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
                 <MudSpacer />
-                <MudButton Variant="Variant.Text" Link="https://mudblazor.com/" Style="color:#594AE2;">MudBlazor</MudButton>
+                @*<MudButton Variant="Variant.Text" Link="https://mudblazor.com/" Style="color:#594AE2;">MudBlazor</MudButton>
                 <MudButton Variant="Variant.Text" Link="https://github.com/Garderoben/MudBlazor.Templates" Style="color:#424242;" Class="mr-3">Source Code</MudButton>
-            </MudToolBar>
+         *@   </MudToolBar>
         </MudHidden>
         <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
             @Body
@@ -74,31 +82,31 @@
         DrawerElevation = 1
     };
 
-    public bool _drawerOpen = true;
-    public bool _themeManagerOpen = false;
+public bool _drawerOpen = true;
+public bool _themeManagerOpen = false;
 
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
+void DrawerToggle()
+{
+    _drawerOpen = !_drawerOpen;
+}
 
-    void OpenThemeManager(bool value)
-    {
-        _themeManagerOpen = value;
-    }
+void OpenThemeManager(bool value)
+{
+    _themeManagerOpen = value;
+}
 
-    void UpdateTheme(ThemeManagerTheme value)
-    {
-        _themeManager = value;
-        StateHasChanged();
-    }
+void UpdateTheme(ThemeManagerTheme value)
+{
+    _themeManager = value;
+    StateHasChanged();
+}
 
-    protected override void OnInitialized()
-    {
-        StateHasChanged();
-    }
+protected override void OnInitialized()
+{
+    StateHasChanged();
+}
 
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
     {
         new BreadcrumbItem("Personal", href: "#"),
         new BreadcrumbItem("Dashboard", href: "#"),

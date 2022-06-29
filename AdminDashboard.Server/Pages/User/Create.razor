@@ -1,5 +1,6 @@
 ﻿@page "/user/create"
-@attribute [Authorize(Policy = "AdminPolicy")]
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
 @using AdminDashboard.Server.Models
 @using System.IO
 @using System.Text.RegularExpressions

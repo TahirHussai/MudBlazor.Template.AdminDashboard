@@ -11,5 +11,6 @@ namespace AdminDashboard.Server.Static
         
         public static string RegisterEndpoint = $"{BaseUrl}api/Account/register/";
         public static string LoginEndPoint = $"{BaseUrl}api/Account/login/";
+        public static string GetUerEndPoint = $"{BaseUrl}api/Account/";
     }
 }

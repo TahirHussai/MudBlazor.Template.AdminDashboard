@@ -8,6 +8,7 @@ namespace AdminDashboard.Server.Repository.Interface
 {
     public interface IAuthenticationRepository
     {
+        public Task<IEnumerable<UserModel>> Get();
         public Task<bool> Register(RegistrationModel user);
         public Task<bool> Login(LoginModel user);
         public Task Logout();

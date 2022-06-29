@@ -1,11 +1,18 @@
-﻿<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
+﻿ @using Blazored.LocalStorage
+@inject  ILocalStorageService _localstorage
+
+@{
+     var ProfilePicture =  _localstorage.GetItemAsync<string>("LoginUserImage");
+     var LoginUserName =  _localstorage.GetItemAsync<string>("LoginUserName");
+}
+<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
     <MudCardHeader>
         <CardHeaderAvatar>
-            <MudAvatar Image="images/avatar_jonny.jpg" />
+            <MudAvatar Image=@($"/images/{ProfilePicture}") />
         </CardHeaderAvatar>
         <CardHeaderContent>
-            <MudText Typo="Typo.body2">Jonny Larsson</MudText>
-            <MudText Typo="Typo.caption">IT Consultant</MudText>
+            <MudText Typo="Typo.body2">@LoginUserName</MudText>
+          @*  <MudText Typo="Typo.caption">IT Consultant</MudText>*@
         </CardHeaderContent>
     </MudCardHeader>
 </MudCard>

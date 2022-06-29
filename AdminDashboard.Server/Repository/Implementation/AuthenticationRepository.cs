@@ -4,6 +4,8 @@ using AdminDashboard.Server.Static;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -47,7 +49,9 @@ namespace AdminDashboard.Server.Repository.Interface
 
             //Store Token
             await _localStorage.SetItemAsync("authToken", token.Token);
-            await _localStorage.SetItemAsync("LoginName", user.EmailAddress);
+            await _localStorage.SetItemAsync("LoginEmail", user.EmailAddress);
+            await _localStorage.SetItemAsync("LoginUserImage", token.ProfilePicture);
+            await _localStorage.SetItemAsync("LoginUserName", token.UserName);
 
             //Change auth state of app
             await ((ApiAuthenticationStateProvider)_apiAuthenticationStateProvider).LoggedIn(user.EmailAddress);
@@ -74,9 +78,40 @@ namespace AdminDashboard.Server.Repository.Interface
         }
         public async Task Logout()
         {
-            await ((ApiAuthenticationStateProvider)_apiAuthenticationStateProvider).LoggedOut();
+            await _localStorage.RemoveItemAsync("authToken");
+            await _localStorage.RemoveItemAsync("LoginEmail");
+            await _localStorage.RemoveItemAsync("LoginUserImage");
+            await _localStorage.RemoveItemAsync("LoginUserName");
+            ((ApiAuthenticationStateProvider)_apiAuthenticationStateProvider)
+                .LoggedOut();
         }
 
+        public async Task<IEnumerable<UserModel>> Get()
+        {
+            List<UserModel> list = new List<UserModel>();
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get
+              , Endpoints.GetUerEndPoint);
 
+                var client = _client.CreateClient();
+                HttpResponseMessage response = await client.SendAsync(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var contnt = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<IList<UserModel>>(contnt);
+                }
+                else
+                {
+                    return list;
+                }
+            }
+            catch (Exception ex)
+            {
+                return list;
+
+            }
+        }
     }
 }

@@ -4,8 +4,8 @@
     <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">Personal</MudText>
     <MudNavLink Href="/personal/dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Dashboard</MudNavLink>
     @*<MudNavLink Href="/personal/account" Icon="@Icons.Material.Outlined.Person">Account</MudNavLink>*@
-    <AuthorizeView Policy="AdminPolicy">
-    <MudNavLink Href="/user/Lis" Icon="@Icons.Material.Outlined.Person">Roles</MudNavLink>
+    <AuthorizeView   Roles="Admin">
+    <MudNavLink Href="/user/List" Icon="@Icons.Material.Outlined.Person">Roles</MudNavLink>
     </AuthorizeView>
     <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">App Examples</MudText>
     <MudNavLink Href="application/email" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Email">Email</MudNavLink>
@@ -19,7 +19,7 @@
         <MudNavLink Href="pages/authentication/register" Icon="@Icons.Material.Outlined.InsertDriveFile">Register</MudNavLink>
         <MudNavLink Href="pages/authentication/forgot-password" Icon="@Icons.Material.Outlined.InsertDriveFile">Forgot Password</MudNavLink>
         <MudNavLink Href="pages/authentication/reset-password" Icon="@Icons.Material.Outlined.InsertDriveFile">Reset Password</MudNavLink>
-        <MudNavLink Href="/pages/authentication/logout" Icon="@Icons.Material.Outlined.LockClock">Logout</MudNavLink>
+        <MudNavLink Href="/logout" Icon="@Icons.Material.Outlined.LockClock">Logout</MudNavLink>
     </MudNavGroup>
     <MudNavGroup Title="Error" Icon="@AlertAssignmentIcon" HideExpandIcon="true">
         <MudNavLink Href="pages/error/404" Icon="@Icons.Material.Outlined.InsertDriveFile">404</MudNavLink>
