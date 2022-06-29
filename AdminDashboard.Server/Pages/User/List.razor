@@ -37,6 +37,7 @@
 }
 else
 {
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"  />
     <MudAlert Severity="MudBlazor.Severity.Warning">No Record Found!</MudAlert>
 }
 
@@ -49,6 +50,7 @@ else
     private bool _loading;
     protected async override Task OnInitializedAsync()
     {
+
         await GetData();
     }
     private async Task GetData()

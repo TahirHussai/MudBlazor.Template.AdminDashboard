@@ -48,6 +48,10 @@ namespace AdminDashboard.Server.Repository.Interface
             var token = JsonConvert.DeserializeObject<ResponseModel>(content);
 
             //Store Token
+            if (token.IsSuccess)
+            {
+
+            
             await _localStorage.SetItemAsync("authToken", token.Token);
             await _localStorage.SetItemAsync("LoginEmail", user.EmailAddress);
             await _localStorage.SetItemAsync("LoginUserImage", token.ProfilePicture);
@@ -58,6 +62,8 @@ namespace AdminDashboard.Server.Repository.Interface
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("bearer", token.Token);
             return true;
+            }
+            return false;
         }
 
         public async Task<bool> Register(RegistrationModel user)
