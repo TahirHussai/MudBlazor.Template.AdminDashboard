@@ -1,4 +1,4 @@
-﻿namespace AdminDashboard.Api.Data
+﻿namespace AdminDashboard.Api.Data.Models
 {
     public class JwtModel
     {

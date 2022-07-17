@@ -1,4 +1,4 @@
-﻿namespace AdminDashboard.Api.Models
+﻿namespace AdminDashboard.Api.Data.Models
 {
     public class ResponseModel
     {

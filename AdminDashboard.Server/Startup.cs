@@ -1,6 +1,4 @@
 using Blazored.LocalStorage;
-using AdminDashboard.Server.Repository.Implementation;
-using AdminDashboard.Server.Repository.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +16,8 @@ using System.Threading.Tasks;
 using AdminDashboard.Server.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
+using AdminDashboard.Server.Repository.Interface;
+using AdminDashboard.Server.Repository.Implementation;
 
 namespace AdminDashboard.Server
 {
@@ -45,6 +45,7 @@ namespace AdminDashboard.Server
             services.AddScoped<JwtSecurityTokenHandler>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IFileUpload, FileUpload>();
+            services.AddScoped<IJobRepository, JobRepository>();
             services.AddSingleton(_ => Configuration);
             services.AddMemoryCache();
             

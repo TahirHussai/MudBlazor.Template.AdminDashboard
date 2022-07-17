@@ -1,0 +1,212 @@
+﻿@page "/job/create"
+@*@using Microsoft.AspNetCore.Authorization
+    @attribute [Authorize(Roles = "Admin")]*@
+@using AdminDashboard.Server.Models
+@using System.IO
+@using System.Text.RegularExpressions
+@using AdminDashboard.Server.Repository.Interface
+@using System.ComponentModel.DataAnnotations
+@using AdminDashboard.Server.DTO
+@inject IJobRepository _loginRepo;
+@inject NavigationManager _navManager
+@inject ISnackbar Snackbar
+<MudHidden Breakpoint="Breakpoint.SmAndDown">
+    <MudToolBar DisableGutters="true">
+        <MudBreadcrumbs Items="_items"></MudBreadcrumbs>
+        <MudSpacer />
+    </MudToolBar>
+</MudHidden>
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+
+    <MudTabPanel Text="General">
+        <MudGrid>
+            <MudItem xs="12" sm="12" md="12">
+                <MudForm Model="@model" @ref="@form" ValidationDelay="0">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText>Job Details</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string" Label="Client Job Title" Required="true" @bind-Value="model.ClientJobTitle" />
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    <MudTextField T="string" Label="CR Job Title" Required="true" @bind-Value="model.CRJobTitle" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="int" Label="Num Openings" Required="true" @bind-Value="model.NumOpenings" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="int" Label="Remaining Openings" Required="true" @bind-Value="model.RemainingOpenings" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="int" Label="Req Degree" Required="true" @bind-Value="model.ReqDegree" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="int" Label="Req Major" Required="true" @bind-Value="model.ReqMajor" />
+                                </MudItem>
+
+
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="decimal" Label="Target Rate" Required="true" @bind-Value="model.TargetRate" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="decimal" Label="OTR" Required="true" @bind-Value="model.OTR" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="decimal" Label="MUR" Required="true" @bind-Value="model.MUR" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
+                                    <MudTextField T="decimal" Label="OTBR" Required="true" @bind-Value="model.OTBR" />
+                                </MudItem>
+
+
+
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="decimal" Label="DLR 1" Required="true" @bind-Value="model.DLR1" />
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="decimal" Label="DLR 2" Required="true" @bind-Value="model.DLR2" />
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="decimal" Label="DLR" Required="true" @bind-Value="model.DLR" />
+                                </MudItem>
+
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="decimal" Label="BR" Required="true" @bind-Value="model.BR" />
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="decimal" Label="BR 1" Required="true" @bind-Value="model.BR1" />
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="decimal" Label="BR 2" Required="true" @bind-Value="model.BR2" />
+                                </MudItem>
+
+
+
+
+                                <MudItem xs="6" md="4">
+                                    <MudDatePicker T="DateTime" Label="Job Start Date" Editable="true" @bind-Date="date" Placeholder="Select Date" />
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudDatePicker T="DateTime" Label="Job End Date" Editable="true" @bind-Date="date" Placeholder="Select Date" />
+
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudTimePicker T="DateTime" Label="First Day Shift Start Time" AmPm="true" TimeFormat="h:mm tt" @bind-Time="time" />
+                                </MudItem>
+
+
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="string" Label="Shift" Required="true" @bind-Value="model.Shift" />
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="string" Label="Shift Start Time " Required="true" @bind-Value="model.ShiftStartTimeDT" />
+                                </MudItem>
+                                <MudItem xs="6" md="4">
+                                    <MudTextField T="string" Label="Shift End Time " Required="true" @bind-Value="model.ShiftEndTimeDT" />
+                                </MudItem>
+
+                                <MudItem xs="12" md="12">
+                                    <MudTextField T="string" Label="Responsibilities" Required="true" @bind-Value="model.Responsibilities" />
+                                </MudItem>
+                                <MudItem xs="12" md="12">
+                                    <MudTextField T="string" Label="Requirements" Required="true" @bind-Value="model.Requirements" />
+                                </MudItem>
+                                <MudItem xs="12" md="12">
+                                    <MudTextField T="string" Label="Education" Required="true" @bind-Value="model.Education" />
+                                </MudItem>
+                                <MudItem xs="12" md="12">
+                                    <MudTextField T="string" Label="Miscellaneous" Required="true" @bind-Value="model.Miscellaneous" />
+                                </MudItem>
+                               @* <MudItem xs="12" md="6">
+                                     <MudSelect @bind-Value="model.UserRole" Variant="Variant.Outlined" Label="Select User Role" Required="true">
+
+                                        @if (Rolelist != null)
+                                        {
+                                        foreach (var roles in Rolelist)
+                                        {
+                                        <MudSelectItem Value="@(roles.RoleName)">@roles.RoleName</MudSelectItem>
+                                        }
+                                        }
+                                        </MudSelect>
+                                </MudItem>*@
+                                <div class="d-flex align-left justify-space-between">
+                                    <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="Active!" @bind-Value="model.Active" />
+                                </div>
+                            </MudGrid>
+                        </MudCardContent>
+                        <MudCardActions Class="pb-4 pl-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  HandleRegistration())">Register</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
+                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> BackToList())">Cancel</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudForm>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+</MudTabs>
+
+@code {
+    MudForm form;
+    private bool isSuccess = true;
+    private bool isInvalidFileType = false;
+
+    JobDTO model = new JobDTO();
+    List<CommonDTO> catList = new List<CommonDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        catList = new List<CommonDTO>()
+        {
+            new CommonDTO(){Title="Admin",Id="1"},
+            new CommonDTO(){Title="Professional",Id="2"},
+            new CommonDTO(){Title="IT",Id="3"},
+            new CommonDTO(){Title="Manufacturing",Id="4"},
+            new CommonDTO(){Title="Engineering",Id="5"},
+        };
+    }
+
+    private JobDTO Model = new JobDTO();
+
+    bool isField = false;
+    private async Task HandleRegistration()
+    {
+
+        var response = await _loginRepo.Add(model);
+
+        if (response)
+        {
+            Snackbar.Add("User Registered Successfully!.", MudBlazor.Severity.Success);
+            BackToList();
+        }
+        else
+        {
+            BackToList();
+            isField = true;
+            Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
+        }
+    }
+
+    private void BackToList()
+    {
+        _navManager.NavigateTo("/user/List");
+    }
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Job", href: "#"),
+        new BreadcrumbItem("Dashboard", href: "#"),
+    };
+    @code {
+        TimeSpan? time = new TimeSpan(00, 45, 00);
+    }
+    @code {
+    DateTime? date = DateTime.Today;
+}
+
+} 

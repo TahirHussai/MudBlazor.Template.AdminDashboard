@@ -1,5 +1,8 @@
 using AdminDashboard.Api.Data;
+using AdminDashboard.Api.Data.Models;
 using AdminDashboard.APi.Data;
+using AdminDashboard.Api.Repository.Interface;
+using AdminDashboard.Api.Repository.Implementation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDefaultIdentity<ApiUser>()
@@ -20,7 +24,8 @@ builder.Services.AddDefaultIdentity<ApiUser>()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Host.UseSerilog((ctx,lg)=>lg.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 
 builder.Services.AddCors(options => {

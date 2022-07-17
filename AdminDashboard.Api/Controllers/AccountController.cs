@@ -1,5 +1,4 @@
-﻿using AdminDashboard.Api.Data;
-using AdminDashboard.Api.Models;
+﻿using AdminDashboard.Api.Data.Models;
 using AdminDashboard.Api.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

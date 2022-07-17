@@ -1,4 +1,5 @@
 ﻿using AdminDashboard.Api.Data;
+using AdminDashboard.Api.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,15 @@ namespace AdminDashboard.APi.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApiUser>
     {
-        //public virtual DbSet<UserProfile> userProfiles { get; set; }
+        
+        public virtual DbSet<JOB>  Jobs { get; set; }
+        public virtual DbSet<Countires>   Countires { get; set; }
+        public virtual DbSet<LuCategory>    LuCategories { get; set; }
+        public virtual DbSet<LuSubCategory>  LuSubCategories { get; set; }
+        public virtual DbSet<LuSector>   LuSectors { get; set; }
+        public virtual DbSet<LuRegion>    LuRegions { get; set; }
+        public virtual DbSet<LuSubRegion>     LuSubRegions { get; set; }
+        public virtual DbSet<Address>      Addresses { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

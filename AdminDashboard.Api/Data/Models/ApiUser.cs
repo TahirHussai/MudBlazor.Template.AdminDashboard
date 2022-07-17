@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace AdminDashboard.Api.Data
+namespace AdminDashboard.Api.Data.Models
 {
     public class ApiUser: IdentityUser
     {

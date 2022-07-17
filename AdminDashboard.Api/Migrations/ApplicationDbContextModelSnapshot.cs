@@ -22,7 +22,7 @@ namespace AdminDashboard.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("AdminDashboard.Api.Data.ApiUser", b =>
+            modelBuilder.Entity("AdminDashboard.Api.Data.Models.ApiUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -247,7 +247,7 @@ namespace AdminDashboard.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("AdminDashboard.Api.Data.ApiUser", null)
+                    b.HasOne("AdminDashboard.Api.Data.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -256,7 +256,7 @@ namespace AdminDashboard.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("AdminDashboard.Api.Data.ApiUser", null)
+                    b.HasOne("AdminDashboard.Api.Data.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -271,7 +271,7 @@ namespace AdminDashboard.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AdminDashboard.Api.Data.ApiUser", null)
+                    b.HasOne("AdminDashboard.Api.Data.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -280,7 +280,7 @@ namespace AdminDashboard.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("AdminDashboard.Api.Data.ApiUser", null)
+                    b.HasOne("AdminDashboard.Api.Data.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

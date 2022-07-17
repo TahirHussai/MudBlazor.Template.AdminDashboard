@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AdminDashboard.Api.Models
+namespace AdminDashboard.Api.Data.Models
 {
     public class RegistrationModel
     {
