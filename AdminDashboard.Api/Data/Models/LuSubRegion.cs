@@ -8,6 +8,8 @@ namespace AdminDashboard.Api.Data.Models
     {
         [Key]
         public int SubRegionID { get; set; }
+        public int RegionRID { get; set; }
+
         public string vchVal { get; set; }
         public string vchDesc { get; set; }
     }

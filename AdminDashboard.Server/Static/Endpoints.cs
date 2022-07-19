@@ -17,5 +17,16 @@ namespace AdminDashboard.Server.Static
         public static string JobEndPoint = $"{BaseUrl}api/Job/Post/";
         public static string GetJobEndPoint = $"{BaseUrl}api/Job/";
 
+
+        public static string CatCreateEndpoint = $"{BaseUrl}api/Category/Post/";
+        public static string CatUpdateEndpoint = $"{BaseUrl}api/Category/Update/";
+        public static string CatGetByIdEndPoint = $"{BaseUrl}api/Category/";
+        public static string CatGetEndPoint = $"{BaseUrl}api/Category/";
+
+        public static string SubCatCreateEndpoint = $"{BaseUrl}api/SubCategory/Post/";
+        public static string SubCatUpdateEndpoint = $"{BaseUrl}api/SubCategory/Update/";
+        public static string SubCatGetByIdEndPoint = $"{BaseUrl}api/SubCategory/";
+        public static string SubCatGetEndPoint = $"{BaseUrl}api/SubCategory/";
+
     }
 }

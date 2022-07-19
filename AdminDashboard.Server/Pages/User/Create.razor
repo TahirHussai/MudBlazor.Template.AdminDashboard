@@ -165,44 +165,7 @@
 
         }
     }
-    //private async Task Submit()
-    //{
-    //    var username = model.EmailAddress;
-    //    var password = model.Password;
-
-    //    if (file != null)
-    //    {
-    //        var ext = Path.GetExtension(file.Name);
-    //        var picId = Guid.NewGuid().ToString().Replace("-", "");
-    //        var picName = $"{picId}{ext}";
-
-    //        _fileUpload.UploadFile(file, msFile, picName);
-
-    //        model.ProfilePicture = picName;
-    //    }
-    //    var user = new IdentityUser { Email = username, UserName = username,EmailConfirmed=true};
-    //    var result = await _userManager.CreateAsync(user, password);
-    //    if (result.Succeeded)
-    //    {
-    //        await _userManager.AddToRoleAsync(user,model.UserRole);
-
-    //         userProfile.ProfilePicture= model.ProfilePicture;
-    //         userProfile.Email=model.EmailAddress;
-    //         userProfile.Password=model.Password;
-    //        userProfile.ForeignKeyId = user.Id;
-    //        userProfile.UserName = model.UserName;
-
-    //        _Repo.InsertUserProfile(userProfile);
-
-    //         Snackbar.Add("User Created.", MudBlazor.Severity.Success);
-
-    //          BackToList();
-    //    }
-    //    else
-    //    {
-    //      Snackbar.Add(result.ToString(), MudBlazor.Severity.Warning);
-    //    }
-    //}
+    
     private void BackToList()
     {
         _navManager.NavigateTo("/user/List");

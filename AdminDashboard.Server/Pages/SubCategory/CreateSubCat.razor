@@ -1,0 +1,177 @@
+﻿@page "/SubCategory/create"
+@using AdminDashboard.Server.DTO
+@using AdminDashboard.Server.Models
+@using AdminDashboard.Server.Repository.Interface
+
+@inject ICategoryRepository _catRepo
+@inject ISubCategoryRepository _SubcatRepo
+@inject NavigationManager _navManager
+@inject ISnackbar Snackbar
+
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="Sub Category">
+        <MudGrid>
+            <MudItem xs="12" sm="12" md="12">
+                <MudForm Model="@model" @ref="@form" ValidationDelay="0">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText>Add New Sub Category</MudText>
+                            </CardHeaderContent>
+
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                <MudItem xs="6" md="6">
+                                    <MudTextField T="string" @bind-Value="model.Abv" Label="Abv" Margin="Margin.Normal"></MudTextField>
+                                </MudItem>
+                                <MudItem xs="6" md="6">
+                                    <MudTextField T="string" @bind-Value="model.Desc" Label="Description" Margin="Margin.Normal"></MudTextField>
+                                </MudItem>
+                                <MudItem xs="5" md="5" Style="border: 1px solid black">
+                                    <label for="author">Category</label>
+                                    <select @bind="model.CategoryRID" class="form-control" id="author">
+                                        <option value="">-- Select Category --</option>
+                                        @if (categories != null)
+                                        {
+                                            foreach (var category in categories)
+                                            {
+                                                <option value="@category.ID">@category.vchDesc </option>
+                                            }
+                                        }
+                                    </select>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                        <MudCardActions Class="pb-4 pl-4">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  Save())">Save</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
+                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> CatList())">Cancel</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudForm>
+            </MudItem>
+            <MudItem xs="12" sm="12" md="12">
+                <MudTable Elevation="25" Items="subcategories" Filter="new Func<SubCategoryDTO, bool>(Search)" @bind-model="model">
+                    <ToolBarContent>
+                        <MudText Typo="Typo.h6">Categories List</MudText>
+                        <br />
+                        <MudTextField @bind-Value="searchString" Placeholder="Search for Categories..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Id</MudTh>
+                        <MudTh>Category</MudTh>
+                        <MudTh>Abv</MudTh>
+                        <MudTh>Description</MudTh>
+                        <MudTh>Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Id">@context.SubCatID</MudTd>
+                        <MudTd DataLabel="CategoryTitle">@context.CategoryTitle</MudTd>
+                        <MudTd DataLabel="Abv">@context.Abv</MudTd>
+                        <MudTd DataLabel="Desc">@context.Desc</MudTd>
+                        <MudTd DataLabel="">
+                            <MudFab @onclick="@(()=>Edit(@context.SubCatID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+                            @*<MudFab @onclick="@(()=>Delete(@context.SubCatID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />*@
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+</MudTabs>
+
+@code {
+    MudForm form;
+    private string searchString = "";
+    SubCategoryDTO model = new SubCategoryDTO();
+    List<SubCategoryDTO> subcategories = new List<SubCategoryDTO>();
+    List<CategoryDTO> categories = new List<CategoryDTO>();
+    protected override async Task OnInitializedAsync()
+    {
+        await subCatList();
+        await CatList();
+    }
+    private async Task CatList()
+    {
+        categories = await _catRepo.Get();
+
+    }
+    private async Task subCatList()
+    {
+        subcategories = await _SubcatRepo.Get();
+
+    }
+    private bool Search(SubCategoryDTO cat)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (cat.Abv.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || cat.Desc.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || cat.CategoryTitle.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+        
+        )
+        {
+            return true;
+        }
+        return false;
+
+    }
+    bool isField = false;
+    private async Task Save()
+    {
+        ResponseModel responseModel = new ResponseModel();
+
+        if(model.SubCatID>0)
+        {
+            responseModel = await _SubcatRepo.Upate(model);
+            if (responseModel.IsSuccess == true)
+            {
+                Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
+                subcategories = new List<SubCategoryDTO>();
+                await subCatList();
+            }
+            else
+            {
+                await subCatList();
+                isField = true;
+                Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
+
+
+            }
+        }
+        else{
+
+
+            responseModel = await _SubcatRepo.Add(model);
+            if (responseModel.IsSuccess == true)
+            {
+                Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
+                subcategories = new List<SubCategoryDTO>();
+                await subCatList();
+            }
+        else
+        {
+            await subCatList();
+            isField = true;
+            Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
+
+             }
+        }
+    }
+    private async Task Edit(int id)
+    {
+        model = await _SubcatRepo.GetById(id);
+    }
+   
+    private void Delete(int id)
+    {
+        //customerService.DeleteCustomer(id);
+        //snackBar.Add("Customer Deleted.", Severity.Success);
+        //GetCustomers();
+    }
+
+
+
+
+} 

@@ -29,6 +29,7 @@ namespace AdminDashboard.Api.Controllers
             return list;
         }
 
+       
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDTO>> GetById(int id)
         {
@@ -39,7 +40,7 @@ namespace AdminDashboard.Api.Controllers
 
             return dto;
         }
-
+        [Route("Post")]
         [HttpPost]
         public async Task<ActionResult<ResponseModel>> Post([FromBody] CategoryDTO dto)
         {

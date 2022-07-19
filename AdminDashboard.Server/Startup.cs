@@ -46,6 +46,8 @@ namespace AdminDashboard.Server
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IFileUpload, FileUpload>();
             services.AddScoped<IJobRepository, JobRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
             services.AddSingleton(_ => Configuration);
             services.AddMemoryCache();
             

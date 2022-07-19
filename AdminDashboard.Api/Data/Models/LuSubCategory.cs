@@ -8,7 +8,9 @@ namespace AdminDashboard.Api.Data.Models
     {
         [Key]
         public int SubCatID { get; set; }
-        public string vchVal { get; set; }
-        public string vchDesc { get; set; }
+        public int CategoryRID { get; set; }
+
+        public string Abv { get; set; }
+        public string Desc { get; set; }
     }
 }

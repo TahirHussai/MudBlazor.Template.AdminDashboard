@@ -26,6 +26,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 builder.Host.UseSerilog((ctx,lg)=>lg.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 
 builder.Services.AddCors(options => {

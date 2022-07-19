@@ -8,16 +8,26 @@ namespace AdminDashboard.Api.Repository.Implementation
     public class SubRegionRepository: ISubRegionRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        public SubRegionRepository(ApplicationDbContext dbContext)
+        private readonly IRegionRepository  _regionRepository;
+        public SubRegionRepository(IRegionRepository regionRepository, ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
+            _regionRepository = regionRepository;
         }
         public ResponseModel Add(SubRegionDTO dto)
         {
             ResponseModel response = new ResponseModel();
             try
             {
+                var exists = _regionRepository.GetById(dto.RegionRID);
+                if (exists==null)
+                {
+                    response.IsSuccess = false;
+                    response.ResponseMessage = "Region Id does not exists!";
+                    return response;
+                }
                 LuSubRegion model = new LuSubRegion();
+                model.RegionRID = dto.RegionRID;
                 model.vchVal = dto.vchVal;
                 model.vchDesc = dto.vchDesc;
 
@@ -45,6 +55,7 @@ namespace AdminDashboard.Api.Repository.Implementation
                 foreach (var item in list)
                 {
                     var obj = new SubRegionDTO();
+                    obj.RegionRID = item.RegionRID;
                     obj.SubRegionID = item.SubRegionID;
                     obj.vchVal = item.vchVal;
                     obj.vchDesc = item.vchDesc;
@@ -62,6 +73,7 @@ namespace AdminDashboard.Api.Repository.Implementation
             if (model != null)
             {
                 dto.SubRegionID = model.SubRegionID;
+                dto.RegionRID = model.RegionRID;
                 dto.vchVal = model.vchVal;
                 dto.vchDesc = model.vchDesc;
             }
@@ -78,7 +90,15 @@ namespace AdminDashboard.Api.Repository.Implementation
             ResponseModel response = new ResponseModel();
             try
             {
+                var exists = _regionRepository.GetById(dto.RegionRID);
+                if (exists == null)
+                {
+                    response.IsSuccess = false;
+                    response.ResponseMessage = "Region Id does not exists!";
+                    return response;
+                }
                 LuSubRegion model = new LuSubRegion();
+                model.SubRegionID = dto.SubRegionID;
                 model.SubRegionID = dto.SubRegionID;
                 model.vchVal = dto.vchVal;
                 model.vchDesc = dto.vchDesc;
