@@ -28,6 +28,8 @@ builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
 builder.Services.AddScoped<ISectorRepository, SectorRepository>();
+builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+builder.Services.AddScoped<ISubRegionRepository, SubRegionRepository>();
 builder.Host.UseSerilog((ctx,lg)=>lg.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
 
 builder.Services.AddCors(options => {

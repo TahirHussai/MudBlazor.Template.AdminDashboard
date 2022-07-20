@@ -1,22 +1,22 @@
-﻿@page "/SubCategory/create"
+﻿@page "/SubRegion/create"
 @using AdminDashboard.Server.DTO
 @using AdminDashboard.Server.Models
 @using AdminDashboard.Server.Repository.Interface
 
-@inject ICategoryRepository _catRepo
-@inject ISubCategoryRepository _SubcatRepo
+@inject IRegionRepository _regRepo
+@inject ISubRegionRepository _SubRegionRepo
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
 
 <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-    <MudTabPanel Text="Sub Category">
+    <MudTabPanel Text="Sub Region">
         <MudGrid>
             <MudItem xs="12" sm="12" md="12">
                 <MudForm Model="@model" @ref="@form" ValidationDelay="0">
-                    <fieldset class="fieldSet">
-  <legend class="lengend">Add New Sub Category</legend>
+                     <fieldset class="fieldSet">
+  <legend class="lengend">Add New Sub Region</legend>
                     <MudCard>
-                       
+                      
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="6" md="6">
@@ -25,15 +25,15 @@
                                 <MudItem xs="6" md="6">
                                     <MudTextField T="string" @bind-Value="model.Desc" Label="Description" Margin="Margin.Normal"></MudTextField>
                                 </MudItem>
-                                <MudItem xs="5" md="5" Style="border: 1px solid black">
-                                    <label for="author">Category</label>
-                                    <select @bind="model.CategoryRID" class="form-control" id="author">
-                                        <option value="">-- Select Category --</option>
-                                        @if (categories != null)
+                                <MudItem xs="3" md="3" Style="border: 1px solid black">
+                                    <label for="Region">Region</label>
+                                    <select @bind="model.RegionRID" class="form-control" id="RegionRID">
+                                        <option value="">-- Select Region --</option>
+                                        @if (regionlist != null)
                                         {
-                                            foreach (var category in categories)
+                                            foreach (var list in regionlist)
                                             {
-                                                <option value="@category.ID">@category.vchDesc </option>
+                                                <option value="@list.RegionID">@list.Desc </option>
                                             }
                                         }
                                     </select>
@@ -43,19 +43,19 @@
                         <MudCardActions Class="pb-4 pl-4">
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  Save())">Save</MudButton>
                             <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
-                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> CatList())">Cancel</MudButton>
+                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> suRegList())">Cancel</MudButton>
                         </MudCardActions>
                     </MudCard>
                     </fieldset>
                 </MudForm>
             </MudItem>
+
             <MudItem xs="12" sm="12" md="12">
                  <fieldset class="fieldSet">
-  <legend class="lengend"> Sub Categories List</legend>
-                <MudTable Elevation="25" Items="subcategories" Filter="new Func<SubCategoryDTO, bool>(Search)" @bind-model="model">
+  <legend class="lengend">Sub Region List:</legend>
+                <MudTable Elevation="25" Items="subRegionlist" Filter="new Func<SubRegionDTO, bool>(Search)" @bind-model="model">
                     <ToolBarContent>
-                       
-                        <MudTextField @bind-Value="searchString" Placeholder="Search for Categories..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        <MudTextField @bind-Value="searchString" Placeholder="Search for regionlist..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>Id</MudTh>
@@ -65,12 +65,12 @@
                         <MudTh>Actions</MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd DataLabel="Id">@context.SubCatID</MudTd>
-                        <MudTd DataLabel="CategoryTitle">@context.CategoryTitle</MudTd>
+                        <MudTd DataLabel="Id">@context.SubRegionID</MudTd>
+                        <MudTd DataLabel="CategoryTitle">@context.RegionTitle</MudTd>
                         <MudTd DataLabel="Abv">@context.Abv</MudTd>
                         <MudTd DataLabel="Desc">@context.Desc</MudTd>
                         <MudTd DataLabel="">
-                            <MudFab @onclick="@(()=>Edit(@context.SubCatID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+                            <MudFab @onclick="@(()=>Edit(@context.SubRegionID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
                             @*<MudFab @onclick="@(()=>Delete(@context.SubCatID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />*@
                         </MudTd>
                     </RowTemplate>
@@ -85,30 +85,30 @@
 @code {
     MudForm form;
     private string searchString = "";
-    SubCategoryDTO model = new SubCategoryDTO();
-    List<SubCategoryDTO> subcategories = new List<SubCategoryDTO>();
-    List<CategoryDTO> categories = new List<CategoryDTO>();
+    SubRegionDTO model = new SubRegionDTO();
+    List<SubRegionDTO> subRegionlist = new List<SubRegionDTO>();
+    List<RegionDTO> regionlist = new List<RegionDTO>();
     protected override async Task OnInitializedAsync()
     {
-        await subCatList();
-        await CatList();
+        await suRegList();
+        await RegList();
     }
-    private async Task CatList()
+    private async Task RegList()
     {
-        categories = await _catRepo.Get();
+        regionlist = await _regRepo.Get();
 
     }
-    private async Task subCatList()
+    private async Task suRegList()
     {
-        subcategories = await _SubcatRepo.Get();
+        subRegionlist = await _SubRegionRepo.Get();
 
     }
-    private bool Search(SubCategoryDTO cat)
+    private bool Search(SubRegionDTO cat)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (cat.Abv.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || cat.Desc.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-            || cat.CategoryTitle.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || cat.RegionTitle.Contains(searchString, StringComparison.OrdinalIgnoreCase)
         
         )
         {
@@ -122,18 +122,18 @@
     {
         ResponseModel responseModel = new ResponseModel();
 
-        if(model.SubCatID>0)
+        if(model.SubRegionID>0)
         {
-            responseModel = await _SubcatRepo.Upate(model);
+            responseModel = await _SubRegionRepo.Upate(model);
             if (responseModel.IsSuccess == true)
             {
                 Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
-                subcategories = new List<SubCategoryDTO>();
-                await subCatList();
+                subRegionlist = new List<SubRegionDTO>();
+                await suRegList();
             }
             else
             {
-                await subCatList();
+                await suRegList();
                 isField = true;
                 Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
 
@@ -143,16 +143,16 @@
         else{
 
 
-            responseModel = await _SubcatRepo.Add(model);
+            responseModel = await _SubRegionRepo.Add(model);
             if (responseModel.IsSuccess == true)
             {
                 Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
-                subcategories = new List<SubCategoryDTO>();
-                await subCatList();
+                subRegionlist = new List<SubRegionDTO>();
+                await suRegList();
             }
         else
         {
-            await subCatList();
+            await suRegList();
             isField = true;
             Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
 
@@ -161,14 +161,12 @@
     }
     private async Task Edit(int id)
     {
-        model = await _SubcatRepo.GetById(id);
+        model = await _SubRegionRepo.GetById(id);
     }
    
     private void Delete(int id)
     {
-        //customerService.DeleteCustomer(id);
-        //snackBar.Add("Customer Deleted.", Severity.Success);
-        //GetCustomers();
+       
     }
 
 

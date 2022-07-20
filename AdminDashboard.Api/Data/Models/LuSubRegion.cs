@@ -10,7 +10,7 @@ namespace AdminDashboard.Api.Data.Models
         public int SubRegionID { get; set; }
         public int RegionRID { get; set; }
 
-        public string vchVal { get; set; }
-        public string vchDesc { get; set; }
+        public string Abv { get; set; }
+        public string Desc { get; set; }
     }
 }

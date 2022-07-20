@@ -48,6 +48,10 @@ namespace AdminDashboard.Server
             services.AddScoped<IJobRepository, JobRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+            services.AddScoped<ISectorRepository, SectorRepository>();
+            services.AddScoped<IRegionRepository, RegionRepository>();
+            services.AddScoped<ISubRegionRepository, SubRegionRepository>();
+
             services.AddSingleton(_ => Configuration);
             services.AddMemoryCache();
             

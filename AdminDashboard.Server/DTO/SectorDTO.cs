@@ -1,4 +1,4 @@
-﻿namespace AdminDashboard.Api.Data.DTO
+﻿namespace AdminDashboard.Server.DTO
 {
     public class SectorDTO
     {

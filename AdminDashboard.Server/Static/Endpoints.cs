@@ -28,5 +28,28 @@ namespace AdminDashboard.Server.Static
         public static string SubCatGetByIdEndPoint = $"{BaseUrl}api/SubCategory/";
         public static string SubCatGetEndPoint = $"{BaseUrl}api/SubCategory/";
 
+
+        public static string SectorCreateEndpoint = $"{BaseUrl}api/Sector/Post/";
+        public static string SectorUpdateEndpoint = $"{BaseUrl}api/Sector/Update/";
+        public static string SectorGetByIdEndPoint = $"{BaseUrl}api/Sector/";
+        public static string SectorGetEndPoint = $"{BaseUrl}api/Sector/";
+
+
+        public static string RegionCreateEndpoint = $"{BaseUrl}api/Region/Post/";
+        public static string RegionUpdateEndpoint = $"{BaseUrl}api/Region/Update/";
+        public static string RegionGetByIdEndPoint = $"{BaseUrl}api/Region/";
+        public static string RegionGetEndPoint = $"{BaseUrl}api/Region/";
+
+
+        public static string SubRegionCreateEndpoint = $"{BaseUrl}api/SubRegion/Post/";
+        public static string SubRegionUpdateEndpoint = $"{BaseUrl}api/SubRegion/Update/";
+        public static string SubRegionGetByIdEndPoint = $"{BaseUrl}api/SubRegion/";
+        public static string SubRegionGetEndPoint = $"{BaseUrl}api/SubRegion/";
+
+        public static string AddressCreateEndpoint = $"{BaseUrl}api/Address/Post/";
+        public static string AddressUpdateEndpoint = $"{BaseUrl}api/Address/Update/";
+        public static string AddressGetByIdEndPoint = $"{BaseUrl}api/Address/";
+        public static string AddressGetEndPoint = $"{BaseUrl}api/Address/";
+
     }
 }

@@ -28,8 +28,9 @@ namespace AdminDashboard.Api.Repository.Implementation
                 }
                 LuSubRegion model = new LuSubRegion();
                 model.RegionRID = dto.RegionRID;
-                model.vchVal = dto.vchVal;
-                model.vchDesc = dto.vchDesc;
+                model.Abv = dto.Abv;
+             
+                model.Desc = dto.Desc;
 
                 _dbContext.LuSubRegions.Add(model);
                 Save();
@@ -57,8 +58,9 @@ namespace AdminDashboard.Api.Repository.Implementation
                     var obj = new SubRegionDTO();
                     obj.RegionRID = item.RegionRID;
                     obj.SubRegionID = item.SubRegionID;
-                    obj.vchVal = item.vchVal;
-                    obj.vchDesc = item.vchDesc;
+                    obj.Abv = item.Abv;
+                    obj.Desc = item.Desc;
+                   obj.RegionTitle = _regionRepository.GetById(item.RegionRID).Desc;
                     listdto.Add(obj);
                 }
             }
@@ -74,8 +76,8 @@ namespace AdminDashboard.Api.Repository.Implementation
             {
                 dto.SubRegionID = model.SubRegionID;
                 dto.RegionRID = model.RegionRID;
-                dto.vchVal = model.vchVal;
-                dto.vchDesc = model.vchDesc;
+                dto.Abv = model.Abv;
+                dto.Desc = model.Desc;
             }
             return dto;
         }
@@ -99,9 +101,9 @@ namespace AdminDashboard.Api.Repository.Implementation
                 }
                 LuSubRegion model = new LuSubRegion();
                 model.SubRegionID = dto.SubRegionID;
-                model.SubRegionID = dto.SubRegionID;
-                model.vchVal = dto.vchVal;
-                model.vchDesc = dto.vchDesc;
+                model.RegionRID = dto.RegionRID;
+                model.Abv = dto.Abv;
+                model.Desc = dto.Desc;
                 _dbContext.LuSubRegions.Update(model);
                 Save();
                 response.IsSuccess = true;

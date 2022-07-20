@@ -1,0 +1,25 @@
+﻿.lengend {
+    font-family: sans-serif;
+    font-size: 16px;
+    color: #555555;
+    background-color: #ffffff;
+    font-weight: normal !important;
+    text-align: left !important;
+    width: inherit;
+    margin-bottom: 0 !important;
+    padding: 0 10px;
+    border-bottom: none;
+    font-weight:bold;
+}
+
+.fieldSet {
+    font-family: sans-serif;
+    color: #555555;
+    border: 1px groove #DFDED8 !important;
+    padding: 3px 15px 5px 15px !important;
+    margin: 0 0 5px 0 !important;
+    -webkit-box-shadow: 0px 0px 0px 0px gray;
+    box-shadow: 0px 0px 0px 0px gray;
+    border-color: #DFDED8 !important;
+    border-style: solid !important;
+}

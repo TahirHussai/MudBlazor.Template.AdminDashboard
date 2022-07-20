@@ -40,7 +40,7 @@ namespace AdminDashboard.Api.Controllers
 
             return dto;
         }
-
+        [Route("Post")]
         [HttpPost]
         public async Task<ActionResult<ResponseModel>> Post([FromBody] SectorDTO dto)
         {
@@ -51,7 +51,7 @@ namespace AdminDashboard.Api.Controllers
             _logger.LogInformation("Sector  Attempted");
             return response;
         }
-
+        [Route("Update")]
         [HttpPut]
         public async Task<ActionResult<ResponseModel>> Update([FromBody] SectorDTO dto)
         {

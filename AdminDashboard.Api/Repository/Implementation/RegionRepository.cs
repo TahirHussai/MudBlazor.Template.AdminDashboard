@@ -18,8 +18,8 @@ namespace AdminDashboard.Api.Repository.Implementation
             try
             {
                 LuRegion model = new LuRegion();
-                model.vchVal = dto.vchVal;
-                model.vchDesc = dto.vchDesc;
+                model.Abv = dto.Abv;
+                model.Desc = dto.Desc;
 
                 _dbContext.LuRegions.Add(model);
                 Save();
@@ -46,8 +46,8 @@ namespace AdminDashboard.Api.Repository.Implementation
                 {
                     var obj = new RegionDTO();
                     obj.RegionID = item.RegionID;
-                    obj.vchVal = item.vchVal;
-                    obj.vchDesc = item.vchDesc;
+                    obj.Abv = item.Abv;
+                    obj.Desc = item.Desc;
                     listdto.Add(obj);
                 }
             }
@@ -62,8 +62,8 @@ namespace AdminDashboard.Api.Repository.Implementation
             if (model != null)
             {
                 dto.RegionID = model.RegionID;
-                dto.vchVal = model.vchVal;
-                dto.vchDesc = model.vchDesc;
+                dto.Abv = model.Abv;
+                dto.Desc = model.Desc;
             }
             return dto;
         }
@@ -80,8 +80,8 @@ namespace AdminDashboard.Api.Repository.Implementation
             {
                 LuRegion model = new LuRegion();
                 model.RegionID = dto.RegionID;
-                model.vchVal = dto.vchVal;
-                model.vchDesc = dto.vchDesc;
+                model.Abv = dto.Abv;
+                model.Desc = dto.Desc;
                 _dbContext.LuRegions.Update(model);
                 Save();
                 response.IsSuccess = true;

@@ -43,7 +43,7 @@ namespace AdminDashboard.Api.Controllers
 
             return dto;
         }
-
+        [Route("Post")]
         [HttpPost]
         public async Task<ActionResult<ResponseModel>> Post([FromBody] AddressDTO dto)
         {
@@ -54,7 +54,7 @@ namespace AdminDashboard.Api.Controllers
             _logger.LogInformation("Address  Attempted");
             return response;
         }
-
+        [Route("Update")]
         [HttpPut]
         public async Task<ActionResult<ResponseModel>> Update([FromBody] AddressDTO dto)
         {

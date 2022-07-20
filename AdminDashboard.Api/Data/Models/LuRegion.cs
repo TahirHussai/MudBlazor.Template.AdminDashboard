@@ -8,7 +8,7 @@ namespace AdminDashboard.Api.Data.Models
     {
         [Key]
         public int RegionID { get; set; }
-        public string vchVal { get; set; }
-        public string vchDesc { get; set; }
+        public string Abv { get; set; }
+        public string Desc { get; set; }
     }
 }

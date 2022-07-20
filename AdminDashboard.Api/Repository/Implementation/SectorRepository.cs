@@ -18,8 +18,8 @@ namespace AdminDashboard.Api.Repository.Implementation
             try
             {
                 LuSector model = new LuSector();
-                model.vchVal = dto.vchVal;
-                model.vchDesc = dto.vchDesc;
+                model.Abv = dto.Abv;
+                model.Desc = dto.Desc;
 
                 _dbContext.LuSectors.Add(model);
                 Save();
@@ -46,8 +46,8 @@ namespace AdminDashboard.Api.Repository.Implementation
                 {
                     var obj = new SectorDTO();
                     obj.SectorID = item.SectorID;
-                    obj.vchVal = item.vchVal;
-                    obj.vchDesc = item.vchDesc;
+                    obj.Abv = item.Abv;
+                    obj.Desc = item.Desc;
                     listdto.Add(obj);
                 }
             }
@@ -62,8 +62,8 @@ namespace AdminDashboard.Api.Repository.Implementation
             if (model != null)
             {
                 dto.SectorID = model.SectorID;
-                dto.vchVal = model.vchVal;
-                dto.vchDesc = model.vchDesc;
+                dto.Abv = model.Abv;
+                dto.Desc = model.Desc;
             }
             return dto;
         }
@@ -80,8 +80,8 @@ namespace AdminDashboard.Api.Repository.Implementation
             {
                 LuSector model = new LuSector();
                 model.SectorID = dto.SectorID;
-                model.vchVal = dto.vchVal;
-                model.vchDesc = dto.vchDesc;
+                model.Abv = dto.Abv;
+                model.Desc = dto.Desc;
                 _dbContext.LuSectors.Update(model);
                 Save();
                 response.IsSuccess = true;

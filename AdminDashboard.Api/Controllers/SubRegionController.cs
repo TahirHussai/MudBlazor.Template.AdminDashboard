@@ -38,7 +38,7 @@ namespace AdminDashboard.Api.Controllers
 
             return dto;
         }
-
+        [Route("Post")]
         [HttpPost]
         public async Task<ActionResult<ResponseModel>> Post([FromBody] SubRegionDTO dto)
         {
@@ -49,7 +49,7 @@ namespace AdminDashboard.Api.Controllers
             _logger.LogInformation("Sub Region  Attempted");
             return response;
         }
-
+        [Route("Update")]
         [HttpPut]
         public async Task<ActionResult<ResponseModel>> Update([FromBody] SubRegionDTO dto)
         {

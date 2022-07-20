@@ -1,4 +1,4 @@
-﻿@page "/Category/create"
+﻿@page "/Region/create"
 @using AdminDashboard.Server.DTO
 
 @using System.ComponentModel.DataAnnotations
@@ -6,33 +6,33 @@
 @using AdminDashboard.Server.Repository.Interface
 
 
-@inject ICategoryRepository _catRepo
+@inject IRegionRepository  _regionRepo
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
 
 <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
-    <MudTabPanel Text="Category">
+    <MudTabPanel Text="Region">
         <MudGrid>
             <MudItem xs="12" sm="12" md="12">
                 <MudForm Model="@model" @ref="@form" ValidationDelay="0">
                      <fieldset class="fieldSet">
-  <legend class="lengend">Add New Category</legend>
+  <legend class="lengend">Add New  Region</legend>
                     <MudCard>
-                       
+                        
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="6" md="6">
-                                    <MudTextField T="string" @bind-Value="model.vchVal" Label="Abv" Margin="Margin.Normal"></MudTextField>
+                                    <MudTextField T="string" @bind-Value="model.Abv" Label="Abv" Margin="Margin.Normal"></MudTextField>
                                 </MudItem>
                                 <MudItem xs="6" md="6">
-                                    <MudTextField T="string" @bind-Value="model.vchDesc" Label="Description" Margin="Margin.Normal"></MudTextField>
+                                    <MudTextField T="string" @bind-Value="model.Desc" Label="Description" Margin="Margin.Normal"></MudTextField>
                                 </MudItem>
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  Save())">Save</MudButton>
                             <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
-                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> CatList())">Cancel</MudButton>
+                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> RegionList())">Cancel</MudButton>
                         </MudCardActions>
                     </MudCard>
                     </fieldset>
@@ -40,8 +40,8 @@
             </MudItem>
               <MudItem xs="12" sm="12" md="12">
                    <fieldset class="fieldSet">
-  <legend class="lengend"> Categories List</legend>
-            <MudTable Elevation="25" Items="categories" Filter="new Func<CategoryDTO, bool>(Search)" @bind-model="model">
+  <legend class="lengend"> Region List</legend>
+            <MudTable Elevation="25" Items="regionList" Filter="new Func<RegionDTO, bool>(Search)" @bind-model="model">
                 <ToolBarContent>
                     
                                  <MudTextField @bind-Value="searchString" Placeholder="Search for Categories..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -53,11 +53,11 @@
                     <MudTh>Actions</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="Id">@context.ID</MudTd>
-                    <MudTd DataLabel="FirstName">@context.vchVal</MudTd>
-                    <MudTd DataLabel="LastName">@context.vchDesc</MudTd>
+                    <MudTd DataLabel="Id">@context.RegionID</MudTd>
+                    <MudTd DataLabel="FirstName">@context.Abv</MudTd>
+                    <MudTd DataLabel="LastName">@context.Desc</MudTd>
                      <MudTd DataLabel="">
-                        <MudFab @onclick="@(()=>Edit(@context.ID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+                        <MudFab @onclick="@(()=>Edit(@context.RegionID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
                         @*<MudFab @onclick="@(()=>Delete(@context.ID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />*@
                         </MudTd>
                 </RowTemplate>
@@ -72,24 +72,24 @@
 @code {
     MudForm form;
     private string searchString = "";
-    CategoryDTO model = new CategoryDTO();
-    List<CategoryDTO> categories = new List<CategoryDTO>();
+    RegionDTO model = new RegionDTO();
+    List<RegionDTO> regionList = new List<RegionDTO>();
 
     protected override async Task OnInitializedAsync()
     {
-        await CatList();
+        await RegionList();
     }
-    private async Task CatList()
+    private async Task RegionList()
     {
-        categories = await _catRepo.Get();
+        regionList = await _regionRepo.Get();
 
     }
-    private bool Search(CategoryDTO cat)
+    private bool Search(RegionDTO cat)
     {
 
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (cat.vchVal.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-            || cat.vchDesc.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (cat.Abv.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || cat.Desc.Contains(searchString, StringComparison.OrdinalIgnoreCase))
         {
             return true;
         }
@@ -100,18 +100,18 @@
     private async Task Save()
     {
         ResponseModel  responseModel = new ResponseModel();
-        if(model.ID>0)
+        if(model.RegionID>0)
         {
-            responseModel = await _catRepo.Upate(model);
+            responseModel = await _regionRepo.Upate(model);
             if (responseModel.IsSuccess == true)
             {
                 Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
-               categories = new List<CategoryDTO>();
-                OnInitializedAsync();
+               regionList = new List<RegionDTO>();
+                 await RegionList();
             }
             else
             {
-                OnInitializedAsync();
+                await RegionList();
                 isField = true;
                 Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
 
@@ -122,16 +122,16 @@
         {
             
        
-        responseModel = await _catRepo.Add(model);
+        responseModel = await _regionRepo.Add(model);
         if (responseModel.IsSuccess == true)
         {
             Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
-            categories = new List<CategoryDTO>();
-            OnInitializedAsync();
+            regionList = new List<RegionDTO>();
+             await RegionList();
         }
         else
         {
-            OnInitializedAsync();
+             await RegionList();
             isField = true;
             Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
 
@@ -141,7 +141,7 @@
     }
     private async Task Edit(int id)
     {
-        model = await _catRepo.GetById(id);
+        model = await _regionRepo.GetById(id);
     }
     private void Delete(int id)
     {
