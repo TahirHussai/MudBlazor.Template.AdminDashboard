@@ -51,5 +51,10 @@ namespace AdminDashboard.Server.Static
         public static string AddressGetByIdEndPoint = $"{BaseUrl}api/Address/";
         public static string AddressGetEndPoint = $"{BaseUrl}api/Address/";
 
+
+        public static string CountryGetByIdEndPoint = $"{BaseUrl}api/Country/";
+        public static string CountryGetEndPoint = $"{BaseUrl}api/Country/";
+        public static string CountryCreateEndpoint = $"{BaseUrl}api/Country/Post/";
+        public static string CountryUpdateEndpoint = $"{BaseUrl}api/Country/Update/";
     }
 }

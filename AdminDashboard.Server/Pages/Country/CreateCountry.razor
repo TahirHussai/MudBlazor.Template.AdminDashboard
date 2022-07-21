@@ -1,0 +1,154 @@
+﻿@page "/Country/create"
+@using AdminDashboard.Server.DTO
+
+@using System.ComponentModel.DataAnnotations
+@using AdminDashboard.Server.Models
+@using AdminDashboard.Server.Repository.Interface
+
+
+@inject ICountryRepository _countryRepo
+@inject NavigationManager _navManager
+@inject ISnackbar Snackbar
+
+<MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
+    <MudTabPanel Text="Country">
+        <MudGrid>
+            <MudItem xs="12" sm="12" md="12">
+                <MudForm Model="@model" @ref="@form" ValidationDelay="0">
+                    <fieldset class="fieldSet">
+                        <legend class="lengend">Add New Country</legend>
+                        <MudCard>
+
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem xs="6" md="6">
+                                        <MudTextField T="string" @bind-Value="model.Abv" Label="Abv" Margin="Margin.Normal"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="6" md="6">
+                                        <MudTextField T="string" @bind-Value="model.CountryName" Label="Country" Margin="Margin.Normal"></MudTextField>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                            <MudCardActions Class="pb-4 pl-4">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  Save())">Save</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
+                                <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> Countryist())">Cancel</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </fieldset>
+                </MudForm>
+            </MudItem>
+            <MudItem xs="12" sm="12" md="12">
+                <fieldset class="fieldSet">
+                    <legend class="lengend"> Country List</legend>
+                    <MudTable Elevation="25" Items="countries" Filter="new Func<CountryDTO, bool>(Search)" @bind-model="model">
+                        <ToolBarContent>
+
+                            <MudTextField @bind-Value="searchString" Placeholder="Search for countries..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Id</MudTh>
+                            <MudTh>Abv</MudTh>
+                            <MudTh>Country</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Id">@context.ID</MudTd>
+                            <MudTd DataLabel="FirstName">@context.Abv</MudTd>
+                            <MudTd DataLabel="LastName">@context.CountryName</MudTd>
+                            <MudTd DataLabel="">
+                                <MudFab @onclick="@(()=>Edit(@context.ID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+                                @*<MudFab @onclick="@(()=>Delete(@context.ID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />*@
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </fieldset>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+</MudTabs>
+
+@code {
+    MudForm form;
+    private string searchString = "";
+    CountryDTO model = new CountryDTO();
+    List<CountryDTO> countries = new List<CountryDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Countryist();
+    }
+    private async Task Countryist()
+    {
+        countries = await _countryRepo.Get();
+
+    }
+    private bool Search(CountryDTO cat)
+    {
+
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (cat.Abv.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || cat.CountryName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+
+    }
+    bool isField = false;
+    private async Task Save()
+    {
+        ResponseModel responseModel = new ResponseModel();
+        if (model.ID > 0)
+        {
+            responseModel = await _countryRepo.Upate(model);
+            if (responseModel.IsSuccess == true)
+            {
+                Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
+                countries = new List<CountryDTO>();
+                await Countryist();
+            }
+            else
+            {
+                await Countryist();
+                isField = true;
+                Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
+
+
+            }
+        }
+        else
+        {
+
+
+            responseModel = await _countryRepo.Add(model);
+            if (responseModel.IsSuccess == true)
+            {
+                Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
+                countries = new List<CountryDTO>();
+                await Countryist();
+            }
+            else
+            {
+                await Countryist();
+                isField = true;
+                Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
+
+
+            }
+        }
+    }
+    private async Task Edit(int id)
+    {
+        model = await _countryRepo.GetById(id);
+    }
+    private void Delete(int id)
+    {
+       
+    }
+
+
+
+
+} 

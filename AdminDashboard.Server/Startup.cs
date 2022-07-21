@@ -51,6 +51,8 @@ namespace AdminDashboard.Server
             services.AddScoped<ISectorRepository, SectorRepository>();
             services.AddScoped<IRegionRepository, RegionRepository>();
             services.AddScoped<ISubRegionRepository, SubRegionRepository>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
 
             services.AddSingleton(_ => Configuration);
             services.AddMemoryCache();

@@ -8,9 +8,13 @@ namespace AdminDashboard.Api.Repository.Implementation
     public class AddressRepository : IAddressRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        public AddressRepository(ApplicationDbContext dbContext)
+        private readonly ICountryRepository  _countryRepository;
+        private readonly IRegionRepository  _regionRepository;
+        public AddressRepository(IRegionRepository regionRepository, ICountryRepository countryRepository, ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
+            _countryRepository= countryRepository;
+            _regionRepository = regionRepository;
         }
         public ResponseModel Add(AddressDTO dto)
         {
@@ -24,6 +28,7 @@ namespace AdminDashboard.Api.Repository.Implementation
                 model.CreateDate = DateTime.Now;
                 model.City = dto.City;
                 model.CountryID = dto.CountryID;
+                
                 model.PostalCode = dto.PostalCode;
                 model.StateID = dto.StateID;
 
@@ -57,8 +62,11 @@ namespace AdminDashboard.Api.Repository.Implementation
                     obj.CreateDate = item.CreateDate;
                     obj.City = item.City;
                     obj.CountryID = item.CountryID;
+                    obj.CountryName = _countryRepository.GetById(item.CountryID).CountryName;
+                    obj.StateName = _regionRepository.GetById(item.StateID).Desc;
                     obj.PostalCode = item.PostalCode;
                     obj.StateID = item.StateID;
+                    obj.AddressID = item.AddressID;
                     listdto.Add(obj);
                 }
             }
@@ -80,6 +88,7 @@ namespace AdminDashboard.Api.Repository.Implementation
                 dto.CountryID = model.CountryID;
                 dto.PostalCode = model.PostalCode;
                 dto.StateID = model.StateID;
+                dto.AddressID = model.AddressID;
             }
             return dto;
         }
