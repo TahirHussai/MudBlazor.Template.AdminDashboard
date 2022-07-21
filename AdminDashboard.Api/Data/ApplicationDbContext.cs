@@ -8,7 +8,6 @@ namespace AdminDashboard.APi.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApiUser>
     {
-        
         public virtual DbSet<JOB>  Jobs { get; set; }
         public virtual DbSet<Countires>   Countires { get; set; }
         public virtual DbSet<LuCategory>    LuCategories { get; set; }

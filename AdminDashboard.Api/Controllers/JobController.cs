@@ -63,7 +63,7 @@ namespace AdminDashboard.Api.Controllers
             return " ";
         }
 
-        // POST api/<JobController>
+        [Route("Post")]
         [HttpPost]
         public async Task<ActionResult<bool>> Post([FromBody] JobDTO dto)
         {

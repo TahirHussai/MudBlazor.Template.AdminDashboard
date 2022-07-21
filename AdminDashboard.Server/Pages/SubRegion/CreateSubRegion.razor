@@ -25,19 +25,20 @@
                                 <MudItem xs="6" md="6">
                                     <MudTextField T="string" @bind-Value="model.Desc" Label="Description" Margin="Margin.Normal"></MudTextField>
                                 </MudItem>
-                                <MudItem xs="3" md="3" Style="border: 1px solid black">
-                                    <label for="Region">Region</label>
-                                    <select @bind="model.RegionRID" class="form-control" id="RegionRID">
-                                        <option value="">-- Select Region --</option>
-                                        @if (regionlist != null)
-                                        {
-                                            foreach (var list in regionlist)
+                                <MudItem xs="5" md="5" Style="border: 1px solid black">
+                                        <MudSelect T="int" Label="Region" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"   Clearable="true" Required="true" @bind-Value="model.RegionRID">
+                                             <MudSelectItem T="int" Value="0">Select Region</MudSelectItem>
+                                         
+                                             @if (regionlist != null)
                                             {
-                                                <option value="@list.RegionID">@list.Desc </option>
+                                                foreach (var list in regionlist)
+                                                {
+                                             <MudSelectItem T="int" Value="@list.Desc">@list.Desc</MudSelectItem>
+                                                }
                                             }
-                                        }
-                                    </select>
-                                </MudItem>
+                                        </MudSelect>
+                                    </MudItem>
+                                
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">

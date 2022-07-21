@@ -39,7 +39,7 @@ namespace AdminDashboard.Server
 		public DateTime JobStartDT { get; set; }
 		public DateTime JobEndDT { get; set; }
 		public string Shift { get; set; }
-		public DateTime FirstDayShiftStartTime { get; set; }
+		public string FirstDayShiftStartTime { get; set; }
 		public string ShiftStartTimeDT { get; set; }
 		public string ShiftEndTimeDT { get; set; }
     }

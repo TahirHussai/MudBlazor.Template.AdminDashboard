@@ -36,31 +36,33 @@
                                     <MudTextField T="string" @bind-Value="model.PostalCode" Label="Postal Code" Margin="Margin.Normal"></MudTextField>
                                 </MudItem>
                                  <MudItem xs="6" md="6">
-                                    <label for="Country">Country</label>
-                                    <select @bind="model.CountryID" class="form-control" id="CountryId">
-                                        <option value="">-- Select Country --</option>
-                                        @if (countrylist != null)
-                                        {
-                                            foreach (var list in countrylist)
+                                        <MudSelect T="int" Label="Country" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"   Clearable="true" Required="true" @bind-Value="model.CountryID">
+                                             <MudSelectItem T="int" Value="0">Select Country</MudSelectItem>
+                                         
+                                             @if (countrylist != null)
                                             {
-                                                <option value="@list.ID">@list.CountryName </option>
+                                                foreach (var list in countrylist)
+                                                {
+                                             <MudSelectItem T="int" Value="@list.Desc">@list.CountryName</MudSelectItem>
+                                                }
                                             }
-                                        }
-                                    </select>
-                                </MudItem>
-                                 <MudItem xs="6" md="6">
-                                    <label for="State">State</label>
-                                    <select @bind="model.StateID" class="form-control" id="StateID">
-                                        <option value="">-- Select Region --</option>
-                                        @if (regionslist != null)
-                                        {
-                                            foreach (var list in regionslist)
+                                        </MudSelect>
+                                    </MudItem>
+                                    <MudItem xs="6" md="6">
+                                        <MudSelect T="int" Label="State" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"   Clearable="true" Required="true" @bind-Value="model.StateID">
+                                             <MudSelectItem T="int" Value="0">Select State</MudSelectItem>
+                                         
+                                             @if (regionslist != null)
                                             {
-                                                <option value="@list.RegionID">@list.Desc </option>
+                                                foreach (var list in regionslist)
+                                                {
+                                             <MudSelectItem T="int" Value="@list.RegionID">@list.Desc</MudSelectItem>
+                                                }
                                             }
-                                        }
-                                    </select>
-                                </MudItem>
+                                        </MudSelect>
+                                    </MudItem>
+                               
+                                 
                             </MudGrid>
                         </MudCardContent>
                         <MudCardActions Class="pb-4 pl-4">

@@ -7,22 +7,27 @@
 @using AdminDashboard.Server.Repository.Interface
 @using System.ComponentModel.DataAnnotations
 @using AdminDashboard.Server.DTO
-@inject IJobRepository _loginRepo;
+
+@inject ICategoryRepository _catRepo
+@inject ISubCategoryRepository _SubcatRepo
+@inject IAddressRepository _addressRepo
+@inject IRegionRepository _regionRepo
+@inject ISubRegionRepository _subRegionRepo
+@inject IJobRepository _jobRepo
+@inject ISectorRepository _sectorRepo
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
 
 <MudTabs Elevation="1" Rounded="true" PanelClass="mt-6">
 
-    <MudTabPanel Text="General">
+    <MudTabPanel Text="Job">
         <MudGrid>
             <MudItem xs="12" sm="12" md="12">
                 <MudForm Model="@model" @ref="@form" ValidationDelay="0">
+                       <fieldset class="fieldSet">
+  <legend class="lengend">Job Configuration</legend>
                     <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderContent>
-                                <MudText>Job Details</MudText>
-                            </CardHeaderContent>
-                        </MudCardHeader>
+                       
                         <MudCardContent>
                             <MudGrid>
                                 <MudItem xs="12" md="6">
@@ -38,8 +43,12 @@
                                     <MudTextField T="int" Label="Remaining Openings" Required="true" @bind-Value="model.RemainingOpenings" />
                                 </MudItem>
                                 <MudItem xs="6" md="3">
+                                    <MudTextField T="string" Label="Req " Required="true" @bind-Value="model.Req" />
+                                </MudItem>
+                                <MudItem xs="6" md="3">
                                     <MudTextField T="int" Label="Req Degree" Required="true" @bind-Value="model.ReqDegree" />
                                 </MudItem>
+                                 
                                 <MudItem xs="6" md="3">
                                     <MudTextField T="int" Label="Req Major" Required="true" @bind-Value="model.ReqMajor" />
                                 </MudItem>
@@ -79,22 +88,18 @@
                                 <MudItem xs="6" md="4">
                                     <MudTextField T="decimal" Label="BR 2" Required="true" @bind-Value="model.BR2" />
                                 </MudItem>
-
-
-
-
+                               
                                 <MudItem xs="6" md="4">
-                                    <MudDatePicker T="DateTime" Label="Job Start Date" Editable="true" @bind-Date="date" Placeholder="Select Date" />
+                                    <MudDatePicker T="DateTime" Label="Job Start Date" Editable="true" @bind-Date="datefrom" Placeholder="Select Date" />
                                 </MudItem>
                                 <MudItem xs="6" md="4">
-                                    <MudDatePicker T="DateTime" Label="Job End Date" Editable="true" @bind-Date="date" Placeholder="Select Date" />
+                                    <MudDatePicker T="DateTime" Label="Job End Date" Editable="true" @bind-Date="dateto" Placeholder="Select Date" />
 
                                 </MudItem>
                                 <MudItem xs="6" md="4">
                                     <MudTimePicker T="DateTime" Label="First Day Shift Start Time" AmPm="true" TimeFormat="h:mm tt" @bind-Time="time" />
                                 </MudItem>
-
-
+                                 
                                 <MudItem xs="6" md="4">
                                     <MudTextField T="string" Label="Shift" Required="true" @bind-Value="model.Shift" />
                                 </MudItem>
@@ -104,7 +109,7 @@
                                 <MudItem xs="6" md="4">
                                     <MudTextField T="string" Label="Shift End Time " Required="true" @bind-Value="model.ShiftEndTimeDT" />
                                 </MudItem>
-
+                                
                                 <MudItem xs="12" md="12">
                                     <MudTextField T="string" Label="Responsibilities" Required="true" @bind-Value="model.Responsibilities" />
                                 </MudItem>
@@ -117,32 +122,83 @@
                                 <MudItem xs="12" md="12">
                                     <MudTextField T="string" Label="Miscellaneous" Required="true" @bind-Value="model.Miscellaneous" />
                                 </MudItem>
-                               @* <MudItem xs="12" md="6">
-                                     <MudSelect @bind-Value="model.UserRole" Variant="Variant.Outlined" Label="Select User Role" Required="true">
-
-                                        @if (Rolelist != null)
+                               
+                                <MudItem xs="6" md="6">
+                                    <MudSelect T="int" Label="Category" HelperText="Select Category" Clearable="true" Required="true" @bind-Value="model.CatID" >
+                                        @foreach (var category in categories)
                                         {
-                                        foreach (var roles in Rolelist)
+                                            <MudSelectItem T="int" Value="@category.ID">@category.vchDesc</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                    
+                                </MudItem>
+                                <MudItem xs="6" md="6">
+                                    <MudSelect T="int" Label="Sub Category" HelperText="Select Sub Category" Clearable="true" Required="true" @bind-Value="model.CatID2" >
+                                        @foreach (var category in subcategories)
                                         {
-                                        <MudSelectItem Value="@(roles.RoleName)">@roles.RoleName</MudSelectItem>
+                                            <MudSelectItem T="int" Value="@category.SubCatID">@category.Desc</MudSelectItem>
                                         }
+                                    </MudSelect>
+                                    
+                                </MudItem>
+                                    <MudItem xs="6" md="6">
+                                    <MudSelect T="int" Label="Region" HelperText="Select Region" Clearable="true" Required="true" @bind-Value="model.RegionId" >
+                                        @foreach (var list in regionslist)
+                                        {
+                                            <MudSelectItem T="int" Value="@list.RegionID">@list.Desc</MudSelectItem>
                                         }
-                                        </MudSelect>
-                                </MudItem>*@
+                                    </MudSelect>
+                                    
+                                </MudItem>
+                                     <MudItem xs="6" md="6">
+                                    <MudSelect T="int" Label="Sub Region" HelperText="Select Sub Region" Clearable="true" Required="true" @bind-Value="model.SubRegionID" >
+                                        @foreach (var list in subRegionlist)
+                                        {
+                                            <MudSelectItem T="int" Value="@list.SubRegionID">@list.Desc</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                    
+                                </MudItem>
+                                      <MudItem xs="6" md="6">
+                                    <MudSelect T="int" Label="Sector" HelperText="Select Sector" Clearable="true" Required="true" @bind-Value="model.SectorID" >
+                                        @foreach (var list in sectorslist)
+                                        {
+                                            <MudSelectItem T="int" Value="@list.SectorID">@list.Desc</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                    
+                                </MudItem>
+                               
+                                      <MudItem xs="6" md="6">
+                                    <MudSelect T="int" Label="Address" HelperText="Select Address" Clearable="true" Required="true" @bind-Value="model.AddressID" >
+                                        @foreach (var list in addressList)
+                                        {
+                                            <MudSelectItem T="int" Value="@list.AddressID">@list.City  @list.Address1</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                    
+                                </MudItem>
+                              
+                        
                                 <div class="d-flex align-left justify-space-between">
                                     <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="Active!" @bind-Value="model.Active" />
                                 </div>
-                            </MudGrid>
-                        </MudCardContent>
+                            
                         <MudCardActions Class="pb-4 pl-4">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  HandleRegistration())">Register</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  SubmitRequest())">Register</MudButton>
                             <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
                             <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> BackToList())">Cancel</MudButton>
                         </MudCardActions>
+                        </MudGrid>
+                        </MudCardContent>
+                        
                     </MudCard>
+                  </fieldset>
+                    
                 </MudForm>
-            </MudItem>
-        </MudGrid>
+                </MudItem>
+                </MudGrid>
+                    
     </MudTabPanel>
 
 </MudTabs>
@@ -151,38 +207,81 @@
     MudForm form;
     private bool isSuccess = true;
     private bool isInvalidFileType = false;
-
+    DateTime? datefrom = DateTime.Today;
+    DateTime? dateto = DateTime.Today;
     JobDTO model = new JobDTO();
     List<CommonDTO> catList = new List<CommonDTO>();
+    List<AddressDTO> addressList = new List<AddressDTO>();
+    List<RegionDTO> regionslist = new List<RegionDTO>();
+    List<SubRegionDTO> subRegionlist = new List<SubRegionDTO>();
+    List<SectorDTO> sectorslist = new List<SectorDTO>();
+    List<CategoryDTO> categories = new List<CategoryDTO>();
+    List<SubCategoryDTO> subcategories = new List<SubCategoryDTO>();
 
     protected override async Task OnInitializedAsync()
     {
-        catList = new List<CommonDTO>()
-        {
-            new CommonDTO(){Title="Admin",Id="1"},
-            new CommonDTO(){Title="Professional",Id="2"},
-            new CommonDTO(){Title="IT",Id="3"},
-            new CommonDTO(){Title="Manufacturing",Id="4"},
-            new CommonDTO(){Title="Engineering",Id="5"},
-        };
+        await CatList();
+        await subCatList();
+        await RegList();
+        await suRegList();
+        await AddressList();
+        await SecList();
+
     }
 
     private JobDTO Model = new JobDTO();
 
     bool isField = false;
-    private async Task HandleRegistration()
+    private async Task CatList()
     {
+        categories = await _catRepo.Get();
 
-        var response = await _loginRepo.Add(model);
+    }
+    private async Task subCatList()
+    {
+        subcategories = await _SubcatRepo.Get();
+        //subcategories = subcategories.Where(a => a.CategoryRID == model.CatID).ToList();
+
+
+    }
+
+    private async Task RegList()
+    {
+        regionslist = await _regionRepo.Get();
+    }
+    private async Task suRegList()
+    {
+        subRegionlist = await _subRegionRepo.Get();
+
+    }
+    private async Task AddressList()
+    {
+        addressList = await _addressRepo.Get();
+    }
+    private async Task SecList()
+    {
+        sectorslist = await _sectorRepo.Get();
+
+    }
+    void loadSubRegion(ChangeEventArgs e)
+    {
+        var SelectedVal = e.Value;
+
+    }
+    private async Task SubmitRequest()
+    {
+        model.JobStartDT =Convert.ToDateTime(datefrom);
+        model.JobEndDT = Convert.ToDateTime(dateto);
+        var response = await _jobRepo.Add(model);
 
         if (response)
         {
-            Snackbar.Add("User Registered Successfully!.", MudBlazor.Severity.Success);
-            BackToList();
+            Snackbar.Add("Operation Performed Successfully!.", MudBlazor.Severity.Success);
+         
         }
         else
         {
-            BackToList();
+           
             isField = true;
             Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
         }
@@ -192,12 +291,11 @@
     {
         _navManager.NavigateTo("/user/List");
     }
-   
-    @code {
-        TimeSpan? time = new TimeSpan(00, 45, 00);
+
+}
+@code {
+    TimeSpan? time = new TimeSpan(00, 45, 00);
     }
     @code {
-    DateTime? date = DateTime.Today;
-}
 
-} 
+    }

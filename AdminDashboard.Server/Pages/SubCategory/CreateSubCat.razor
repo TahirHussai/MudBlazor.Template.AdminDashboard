@@ -14,67 +14,68 @@
             <MudItem xs="12" sm="12" md="12">
                 <MudForm Model="@model" @ref="@form" ValidationDelay="0">
                     <fieldset class="fieldSet">
-  <legend class="lengend">Add New Sub Category</legend>
-                    <MudCard>
-                       
-                        <MudCardContent>
-                            <MudGrid>
-                                <MudItem xs="6" md="6">
-                                    <MudTextField T="string" @bind-Value="model.Abv" Label="Abv" Margin="Margin.Normal"></MudTextField>
-                                </MudItem>
-                                <MudItem xs="6" md="6">
-                                    <MudTextField T="string" @bind-Value="model.Desc" Label="Description" Margin="Margin.Normal"></MudTextField>
-                                </MudItem>
-                                <MudItem xs="5" md="5" Style="border: 1px solid black">
-                                    <label for="author">Category</label>
-                                    <select @bind="model.CategoryRID" class="form-control" id="author">
-                                        <option value="">-- Select Category --</option>
-                                        @if (categories != null)
-                                        {
-                                            foreach (var category in categories)
+                        <legend class="lengend">Add New Sub Category</legend>
+                        <MudCard>
+
+                            <MudCardContent>
+                                <MudGrid>
+                                    <MudItem xs="6" md="6">
+                                        <MudTextField T="string" @bind-Value="model.Abv" Label="Abv" Margin="Margin.Normal"></MudTextField>
+                                    </MudItem>
+                                    <MudItem xs="6" md="6">
+                                        <MudTextField T="string" @bind-Value="model.Desc" Label="Description" Margin="Margin.Normal"></MudTextField>
+                                    </MudItem>
+
+                                    <MudItem xs="5" md="5" Style="border: 1px solid black">
+                                        <MudSelect T="int" Label="Category" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"   Clearable="true" Required="true" @bind-Value="model.CategoryRID">
+                                             <MudSelectItem T="int" Value="0">Select Category</MudSelectItem>
+                                         
+                                             @if (categories != null)
                                             {
-                                                <option value="@category.ID">@category.vchDesc </option>
+                                                foreach (var category in categories)
+                                                {
+                                             <MudSelectItem T="int" Value="@category.ID">@category.vchDesc</MudSelectItem>
+                                                }
                                             }
-                                        }
-                                    </select>
-                                </MudItem>
-                            </MudGrid>
-                        </MudCardContent>
-                        <MudCardActions Class="pb-4 pl-4">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  Save())">Save</MudButton>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
-                            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> CatList())">Cancel</MudButton>
-                        </MudCardActions>
-                    </MudCard>
+                                        </MudSelect>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCardContent>
+                            <MudCardActions Class="pb-4 pl-4">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@( () =>  Save())">Save</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
+                                <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=> CatList())">Cancel</MudButton>
+                            </MudCardActions>
+                        </MudCard>
                     </fieldset>
                 </MudForm>
             </MudItem>
             <MudItem xs="12" sm="12" md="12">
-                 <fieldset class="fieldSet">
-  <legend class="lengend"> Sub Categories List</legend>
-                <MudTable Elevation="25" Items="subcategories" Filter="new Func<SubCategoryDTO, bool>(Search)" @bind-model="model">
-                    <ToolBarContent>
-                       
-                        <MudTextField @bind-Value="searchString" Placeholder="Search for Categories..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh>Id</MudTh>
-                        <MudTh>Category</MudTh>
-                        <MudTh>Abv</MudTh>
-                        <MudTh>Description</MudTh>
-                        <MudTh>Actions</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Id">@context.SubCatID</MudTd>
-                        <MudTd DataLabel="CategoryTitle">@context.CategoryTitle</MudTd>
-                        <MudTd DataLabel="Abv">@context.Abv</MudTd>
-                        <MudTd DataLabel="Desc">@context.Desc</MudTd>
-                        <MudTd DataLabel="">
-                            <MudFab @onclick="@(()=>Edit(@context.SubCatID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
-                            @*<MudFab @onclick="@(()=>Delete(@context.SubCatID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />*@
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
+                <fieldset class="fieldSet">
+                    <legend class="lengend"> Sub Categories List</legend>
+                    <MudTable Elevation="25" Items="subcategories" Filter="new Func<SubCategoryDTO, bool>(Search)" @bind-model="model">
+                        <ToolBarContent>
+
+                            <MudTextField @bind-Value="searchString" Placeholder="Search for Categories..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Id</MudTh>
+                            <MudTh>Category</MudTh>
+                            <MudTh>Abv</MudTh>
+                            <MudTh>Description</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Id">@context.SubCatID</MudTd>
+                            <MudTd DataLabel="CategoryTitle">@context.CategoryTitle</MudTd>
+                            <MudTd DataLabel="Abv">@context.Abv</MudTd>
+                            <MudTd DataLabel="Desc">@context.Desc</MudTd>
+                            <MudTd DataLabel="">
+                                <MudFab @onclick="@(()=>Edit(@context.SubCatID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+                                @*<MudFab @onclick="@(()=>Delete(@context.SubCatID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />*@
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
                 </fieldset>
             </MudItem>
         </MudGrid>
@@ -109,7 +110,7 @@
         if (cat.Abv.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || cat.Desc.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || cat.CategoryTitle.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-        
+
         )
         {
             return true;
@@ -122,7 +123,7 @@
     {
         ResponseModel responseModel = new ResponseModel();
 
-        if(model.SubCatID>0)
+        if (model.SubCatID > 0)
         {
             responseModel = await _SubcatRepo.Upate(model);
             if (responseModel.IsSuccess == true)
@@ -140,7 +141,8 @@
 
             }
         }
-        else{
+        else
+        {
 
 
             responseModel = await _SubcatRepo.Add(model);
@@ -150,20 +152,20 @@
                 subcategories = new List<SubCategoryDTO>();
                 await subCatList();
             }
-        else
-        {
-            await subCatList();
-            isField = true;
-            Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
+            else
+            {
+                await subCatList();
+                isField = true;
+                Snackbar.Add("Something went wrong!.", MudBlazor.Severity.Warning);
 
-             }
+            }
         }
     }
     private async Task Edit(int id)
     {
         model = await _SubcatRepo.GetById(id);
     }
-   
+
     private void Delete(int id)
     {
         //customerService.DeleteCustomer(id);

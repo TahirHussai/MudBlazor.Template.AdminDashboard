@@ -55,7 +55,7 @@ namespace AdminDashboard.Api.Repository.Implementation
                     var obj = new SubCategoryDTO();
                     obj.CategoryRID = item.CategoryRID;
                     obj.SubCatID = item.SubCatID;
-                    obj.CategoryTitle= _categoryRepository.GetById(item.CategoryRID).vchVal;
+                    obj.CategoryTitle= _categoryRepository.GetById(item.CategoryRID).vchDesc;
                     obj.Abv = item.Abv;
                     obj.Desc = item.Desc;
                     listdto.Add(obj);

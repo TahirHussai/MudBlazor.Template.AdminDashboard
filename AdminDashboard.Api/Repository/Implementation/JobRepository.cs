@@ -17,6 +17,7 @@ namespace AdminDashboard.Api.Repository.Implementation
             bool status = false;
             try
             {
+                user.dtCreated = DateTime.Now;
                 _dbContext.Jobs.Add(DTOToEntity(user));
                 _dbContext.SaveChanges();
                 status = true;

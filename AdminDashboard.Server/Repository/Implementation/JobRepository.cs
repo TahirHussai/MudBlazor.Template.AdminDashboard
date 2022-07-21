@@ -21,6 +21,8 @@ namespace AdminDashboard.Server.Repository.Implementation
         public async Task<bool> Add(JobDTO dto)
         {
             bool IsSuccess = false;
+            dto.dtCreated = DateTime.Now;
+            dto.FirstDayShiftStartTime = "";
             var request = new HttpRequestMessage(HttpMethod.Post
                , Endpoints.JobEndPoint);
             request.Content = new StringContent(JsonConvert.SerializeObject(dto)
